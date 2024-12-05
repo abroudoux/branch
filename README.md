@@ -1,10 +1,21 @@
 # branch
 
-🪵 Bash Utility to improve Git Branch
+🪵 Bash Utility to Enhance Git Branch Management
 
 Version : 1.0.0 (WIP)
 
 ## 🚀 Installation
+
+### Requirements
+
+You'll need to install `fzf` to use `branch`.\
+You can download it using `Hombrew` or `apt`.
+
+```bash
+brew install fzf # or apt install fzf
+```
+
+Refer to [fzp repository](https://github.com/junegunn/fzf) to more informations.
 
 ### Via Homebrew
 
@@ -12,13 +23,13 @@ Wip 🚧
 
 ### Manual
 
-You can copy the function in your shell rc file. You can also create a separate bash file and copy `pm.sh` inside it. You'll need to load it at the beginning of your file, depending your shell (`.bashrc`, `.zshrc`, ...).
+You can copy the function in your shell's RC file. Alternatively, You can create a separate Bash script file and copy `pm.sh` into it. You'll need to load it at the beginning of your shell RC file (e.g., `.bashrc`, `.zshrc`, etc.).
 
 ```bash
 source path/to/your/script.sh
 ```
 
-Don't forget to resource your shell rc file
+Don't forget to resource your shell RC file:
 
 ```bash
 source ~/.zshrc
@@ -26,15 +37,15 @@ source ~/.zshrc
 
 ## 💻 Usage
 
-`branch` allows you to manage your git branches thanks to many actions. Once you're in the interractive mode, with the `--run` / `-r` flag or simply by use `branch`, you can manage your branches.
+`branch` allows you to manage your GÒit branches with various and commons actions. Once you're in interactive mode, either by using the `--run` / `-r` flag or simply by running `branch`, you can manage your branches.
 
 ```bash
 branch --run
 ```
 
-From this menu, you can select a branch and choose to Delete it, checkout on it and many more actions which are comming soon.
+From this menu, you can select a branch and choose to delete it, move on it, and perform many more actions (more features coming soon).
 
-You can also list all your branchs by using the flag `--list` / `-l`.
+You can also list all your branches using the `--list` / `-l` flag.
 
 ```bash
 branch --list
@@ -42,7 +53,7 @@ branch --list
 
 ## 🧑‍🤝‍🧑 Contributing
 
-To contribute, fork the repository and open a pull request with the details of your changes.
+To contribute, fork the repository and open a pull request detailling your changes.
 
 Create a branch with a [conventionnal name](https://tilburgsciencehub.com/building-blocks/collaborate-and-share-your-work/use-github/naming-git-branches/).
 
@@ -55,9 +66,10 @@ Create a branch with a [conventionnal name](https://tilburgsciencehub.com/buildi
 ## 📌 Roadmap
 
 - [ ] Option to create new branch
-- [ ] Add Github status on branch (Untracked, Renamed, Modified...)
+- [ ] Add Git status for branches (Untracked, Renamed, Modified, etc.)
 - [ ] Improve UI
 - [ ] Enable installation via Homebrew
+- [ ] Enable installation via apt
 
 ## 📑 License
 
