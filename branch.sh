@@ -69,9 +69,16 @@ function branch() {
     else
         echo "You selected branch: $selected_option"
 
-        action=$(echo -e "Checkout\nDelete\nCancel" | fzf --prompt "Choose an action: " --height 10%) || { echo "Action canceled."; return; }
+        action=$(echo -e "Copy\nCheckout\nDelete\nCancel" | fzf --prompt "Choose an action: " --height 10% --pointer ">") || { echo "Action canceled."; return; }
 
-        if [[ "$action" == "Checkout" ]]; then
+        if [[ -z "$action" ]]; then
+            echo "No action selected."
+            return 1
+        fi
+
+        if [[ "$action" == "Copy" ]]; then
+            echo -n "$selected_option" | pbcopy && echo "Branch '$selected_option' copied to clipboard."
+        elif [[ "$action" == "Checkout" ]]; then
             git checkout "$selected_option" && echo "Branch '$selected_option' checked out."
         elif [[ "$action" == "Delete" ]]; then
             git branch -D "$selected_option" && echo "Branch '$selected_option' deleted."
