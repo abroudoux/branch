@@ -6,17 +6,11 @@ function branch() {
         return 1
     fi
 
-    branches=$(git branch)
+    branches=$(git branch --format="%(refname:short)" 2>/dev/null)
 
     if [[ -z "$branches" ]]; then
         echo "No branches found"
         return 1
-    fi
-
-    if [[ $# -eq 0 ]]; then
-        echo "You must provide an option"
-        ecjo "Use --help or -h for usage information."
-        return
     fi
 
     while [[ $# -gt 0 ]]; do
@@ -40,4 +34,14 @@ function branch() {
         esac
         shift
     done
+
+    selected_branch=$(echo "$branches" | fzf --prompt "Branches (Press Enter to select the branch selected): " --height 100%)
+
+    if [[ -n "$selected_branch" ]]; then
+        clean_branch=$(echo "$selected_branch" | xargs)
+        echo -n "$clean_branch" | pbcopy
+        echo "Branch '$clean_branch' copied to clipboard."
+    else
+        echo "No branch selected."
+    fi
 }
