@@ -15,6 +15,19 @@ function branch() {
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
+            --run|-r)
+                selected_branch=$(echo "$branches" | fzf --prompt "Press Enter to copy the branch selected: " --height 100%)
+
+                if [[ -n "$selected_branch" ]]; then
+                    clean_branch=$(echo "$selected_branch" | xargs)
+                    echo -n "$clean_branch" | pbcopy
+                    echo "Branch '$clean_branch' copied to clipboard."
+                else
+                    echo "No branch selected."
+                fi
+
+                return
+                ;;
             --list|-l)
                 echo $branches
                 return
@@ -27,6 +40,7 @@ function branch() {
             --help|-h)
                 echo "Usage: branch [options]"
                 echo "Options:"
+                echo "  --run, -r             Start the interactive mode"
                 echo "  --list, -l            List all branches"
                 echo "  --help, -h            Show this help message"
                 return
@@ -35,7 +49,7 @@ function branch() {
         shift
     done
 
-    selected_branch=$(echo "$branches" | fzf --prompt "Branches (Press Enter to select the branch selected): " --height 100%)
+    selected_branch=$(echo "$branches" | fzf --prompt "Press Enter to copy the branch selected: " --height 100%)
 
     if [[ -n "$selected_branch" ]]; then
         clean_branch=$(echo "$selected_branch" | xargs)
@@ -45,3 +59,5 @@ function branch() {
         echo "No branch selected."
     fi
 }
+
+function run() {}
