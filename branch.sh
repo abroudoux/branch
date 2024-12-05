@@ -33,6 +33,8 @@ function branch() {
                 return
                 ;;
             --version|-v)
+                cat ./ascii.txt
+                echo ""
                 version=$(jq -r '.version' ./package.json)
                 echo "$version"
                 return
