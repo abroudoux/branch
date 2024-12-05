@@ -1,0 +1,3 @@
+function branch() {
+    echo "Coucou"
+}
