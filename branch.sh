@@ -13,13 +13,27 @@ function branch() {
         return 1
     fi
 
+    default_branch=$(git symbolic-ref --short HEAD)
+
+    branches_with_default=""
+
+    while IFS= read -r branch; do
+        if [[ "$branch" == "$default_branch" ]]; then
+            branches_with_default+="* $branch"$'\n'
+        else
+            branches_with_default+="  $branch"$'\n'
+        fi
+    done <<< "$branches"
+
     local function run() {
-        selected_option=$(echo "$branches" | fzf --prompt "Select a branch: " --no-info --height 10% --pointer ">") || { echo "Action canceled."; return; }
+        selected_option=$(echo "$branches_with_default" | fzf --prompt "Select a branch: " --no-info --height 10% --pointer ">") || { echo "Action canceled."; return; }
 
         if [[ -z "$selected_option" ]]; then
             echo "No branch selected."
             return 1
         fi
+
+        selected_option=$(echo "$selected_option" | sed 's/ *$//')
 
         echo "You selected branch: $selected_option"
 
