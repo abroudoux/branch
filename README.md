@@ -65,7 +65,7 @@ Create a branch with a [conventionnal name](https://tilburgsciencehub.com/buildi
 
 ## 📌 Roadmap
 
-- [ ] Option to create new branch
+- [x] Option to create new branch
 - [ ] Add Git status for branches (Untracked, Renamed, Modified, etc.)
 - [ ] Improve UI
 - [ ] Enable installation via Homebrew

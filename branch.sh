@@ -13,7 +13,7 @@ function branch() {
         return 1
     fi
 
-        local function run() {
+    local function run() {
         selected_option=$(echo "$branches" | fzf --prompt "Select a branch: " --no-info --height 10% --pointer ">") || { echo "Action canceled."; return; }
 
         if [[ -z "$selected_option" ]]; then
