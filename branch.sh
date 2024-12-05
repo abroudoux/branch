@@ -77,7 +77,7 @@ function branch() {
         fi
 
         if [[ "$action" == "Copy" ]]; then
-            echo -n "$selected_option" | pbcopy && echo "Branch '$selected_option' copied to clipboard."
+            echo -n "$selected_option" | pbcopy && git push && echo "Branch '$selected_option' copied to clipboard."
         elif [[ "$action" == "Checkout" ]]; then
             git checkout "$selected_option" && echo "Branch '$selected_option' checked out."
         elif [[ "$action" == "Merge" ]]; then
