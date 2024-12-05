@@ -33,7 +33,7 @@ function branch() {
             return 1
         fi
 
-        selected_option=$(echo "$selected_option" | sed 's/ *$//')
+        selected_option=$(echo "$selected_option" | sed 's/^[ *]*//;s/[ *]*$//')
 
         echo "You selected branch: $selected_option"
 
