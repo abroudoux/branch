@@ -51,7 +51,7 @@ function branch() {
         shift
     done
 
-    selected_option=$(echo "$branches" | fzf --prompt "Select a branch: " --height 10% --pointer ">") || { echo "Action canceled."; return; }
+    selected_option=$(echo "$branches" | fzf --prompt "Select a branch: " --no-info --height 10% --pointer ">") || { echo "Action canceled."; return; }
 
     if [[ -z "$selected_option" ]]; then
         echo "No branch selected."
@@ -60,7 +60,7 @@ function branch() {
 
     echo "You selected branch: $selected_option"
 
-    action=$(echo -e "Copy\nCheckout\nNew\nMerge\nDelete\nCancel" | fzf --prompt "Choose an action: " --height 10% --pointer ">") || { echo "Action canceled."; return; }
+    action=$(echo -e "Copy\nCheckout\nNew\nMerge\nDelete\nCancel" | fzf --prompt "Choose an action: " --no-info --height 10% --pointer ">") || { echo "Action canceled."; return; }
 
     if [[ -z "$action" ]]; then
         echo "No action selected."
