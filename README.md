@@ -2,7 +2,7 @@
 
 🪵 Bash Utility to Enhance Git Branch Management
 
-Version : 1.0.0 (WIP)
+Version : 1.0.0
 
 ## 🚀 Installation
 
