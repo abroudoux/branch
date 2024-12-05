@@ -49,15 +49,32 @@ function branch() {
         shift
     done
 
-    selected_branch=$(echo "$branches" | fzf --prompt "Press Enter to copy the branch selected: " --height 100%)
+    selected_option=$(echo "$branches" | fzf --prompt "Select a branch: " --height 80%)
 
-    if [[ -n "$selected_branch" ]]; then
-        clean_branch=$(echo "$selected_branch" | xargs)
-        echo -n "$clean_branch" | pbcopy
-        echo "Branch '$clean_branch' copied to clipboard."
-    else
+    if [[ -z "$selected_option" ]]; then
         echo "No branch selected."
+        exit 1
+    fi
+
+    if [[ "$selected_option" == "Create a new branch" ]]; then
+        new_branch_name=$(fzf --prompt "Enter the new branch name: " --height 40%)
+
+        if [[ -n "$new_branch_name" ]]; then
+            git checkout -b "$new_branch_name" && echo "New branch '$new_branch_name' created."
+        else
+            echo "No branch name provided. Action canceled."
+        fi
+    else
+        echo "You selected branch: $selected_option"
+
+        action=$(echo -e "Checkout\nDelete\nCancel" | fzf --prompt "Choose an action: " --height 40%)
+
+        if [[ "$action" == "Checkout" ]]; then
+            git checkout "$selected_option" && echo "Branch '$selected_option' checked out."
+        elif [[ "$action" == "Delete" ]]; then
+            git branch -D "$selected_option" && echo "Branch '$selected_option' deleted."
+        else
+            echo "Action canceled."
+        fi
     fi
 }
-
-function run() {}
