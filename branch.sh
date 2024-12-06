@@ -68,7 +68,7 @@ function branch() {
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            --run|-r)
+            run|-r)
                 run
                 return
                 ;;
@@ -86,7 +86,7 @@ function branch() {
             --help|-h)
                 echo "Usage: branch [options]"
                 echo "Options:"
-                echo "  --run, -r             Start the interactive mode"
+                echo "  run, -r               Start the interactive mode"
                 echo "  --list, -l            List all branches"
                 echo "  --help, -h            Show this help message"
                 return

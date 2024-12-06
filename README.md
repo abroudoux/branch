@@ -2,7 +2,7 @@
 
 🪵 Bash Utility to Enhance Git Branch Management
 
-Version : 1.2.5
+Version : 1.2.6
 
 ## 🚀 Installation
 
@@ -37,10 +37,10 @@ source ~/.zshrc
 
 ## 💻 Usage
 
-`branch` allows you to manage your GÒit branches with various and commons actions. Once you're in interactive mode, either by using the `--run` / `-r` flag or simply by running `branch`, you can manage your branches.
+`branch` allows you to manage your GÒit branches with various and commons actions. Once you're in interactive mode, either by using `run` / the `-r` flag or simply by running `branch`, you can manage your branches.
 
 ```bash
-branch --run
+branch run
 ```
 
 From this menu, you can select a branch and choose to delete it, move on it, and perform many more actions (more features coming soon).
