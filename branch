@@ -90,10 +90,7 @@ while [[ $# -gt 0 ]]; do
             exit
             ;;
         --version|-v)
-            cat ./ascii.txt
-            echo ""
-            version=$(jq -r '.version' ./package.json)
-            echo "$version"
+            echo "1.3.0"
             exit
             ;;
         --help|-h)
