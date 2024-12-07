@@ -11,20 +11,23 @@ func main() {
 	if len(os.Args) > 1 {
 		arg := os.Args[1]
 
-		if arg == "-v" || arg == "--verbose" {
+		if arg == "run" || arg == "-r" {
+			chooseBranch()
+		} else  if arg == "-v" || arg == "--verbose" {
 			fmt.Println("2.0.0")
 		} else if arg == "-l" || arg == "--list" {
 			printBranches()
 		} else if arg == "-h" || arg == "--help" {
 			printHelpManual()
-			os.Exit(0)
 		}
 	}
 
 	isGitInstalled()
 	isInGitRepository()
 
-	//branches := getBranchesWithDefaultIndication()
+	selectedBranch := chooseBranch()
+
+	fmt.Printf("You selected: %s\n", selectedBranch)
 }
 
 func isGitInstalled() bool {
@@ -97,6 +100,8 @@ func printHelpManual() {
 	fmt.Println("branch [run | -r]        Start the interactive branch selection")
 	fmt.Println("branch [--list | -l]     List all branches")
 	fmt.Println("branch [--help | -h]     Show this help message")
+
+	os.Exit(0)
 }
 
 func printBranches() {
@@ -104,5 +109,23 @@ func printBranches() {
 
 	for _, branch := range branches {
 		fmt.Println(branch)
+	}
+}
+
+func chooseBranch() string {
+	branches := getBranchesWithDefaultIndication()
+	cursor := 0
+
+	for {
+		fmt.Print("\033[H\033[2J")
+		fmt.Println("Press Enter to select a branch.")
+
+		for i, branch := range branches {
+			if i == cursor {
+				fmt.Printf("> %s\n", branch)
+			} else {
+				fmt.Printf("  %s\n", branch)
+			}
+		}
 	}
 }
