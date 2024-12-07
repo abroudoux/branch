@@ -103,7 +103,7 @@ while [[ $# -gt 0 ]]; do
             exit
             ;;
         --version|-v)
-            echo "1.4.0"
+            echo "1.4.1"
             exit
             ;;
         --help|-h)

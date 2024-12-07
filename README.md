@@ -2,7 +2,7 @@
 
 🪵 Enhance Git Branch Management
 
-Version : 1.4.0
+Version : 1.4.1
 
 ## 🚀 Installation
 
@@ -39,12 +39,20 @@ branch run # or branch
 ```
 
 ```bash
-    (E)xit
-    (D)elete
-    (M)erge
-    (B)ranch
-    (C)heckout
-  > (N)ame
+    develop
+    feature/ui
+> * main
+--------------------------
+  Select a branch:
+```
+
+```bash
+  (E)xit
+  (D)elete
+  (M)erge
+  (B)ranch
+  (C)heckout
+> (N)ame
 --------------------------
   Choose an action:
 ```
@@ -79,7 +87,3 @@ Create a branch with a [conventionnal name](https://tilburgsciencehub.com/buildi
 ## 📑 License
 
 This project is under MIT license. For more information, please see the file [LICENSE](./LICENSE).
-
-```
-
-```
