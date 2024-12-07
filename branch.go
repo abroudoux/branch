@@ -8,14 +8,23 @@ import (
 )
 
 func main() {
+	if len(os.Args) > 1 {
+		arg := os.Args[1]
+
+		if arg == "-v" || arg == "--verbose" {
+			fmt.Println("2.0.0")
+		} else if arg == "-l" || arg == "--list" {
+			printBranches()
+		} else if arg == "-h" || arg == "--help" {
+			printHelpManual()
+			os.Exit(0)
+		}
+	}
+
 	isGitInstalled()
 	isInGitRepository()
 
-	branches := getBranchesWithDefaultIndication()
-
-	for _, branch := range branches {
-		fmt.Println(branch)
-	}
+	//branches := getBranchesWithDefaultIndication()
 }
 
 func isGitInstalled() bool {
@@ -80,4 +89,20 @@ func getBranchesWithDefaultIndication() []string {
 	}
 
 	return branchesWithDefaultIndication
+}
+
+func printHelpManual() {
+	fmt.Println("Usage: branch [options]")
+	fmt.Println("Options:")
+	fmt.Println("branch [run | -r]        Start the interactive branch selection")
+	fmt.Println("branch [--list | -l]     List all branches")
+	fmt.Println("branch [--help | -h]     Show this help message")
+}
+
+func printBranches() {
+	branches := getBranchesWithDefaultIndication()
+
+	for _, branch := range branches {
+		fmt.Println(branch)
+	}
 }
