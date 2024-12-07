@@ -66,7 +66,13 @@ function branch() {
         elif [[ "$action" == "(M)erge" ]]; then
             git merge "$selected_option" && echo "Branch '$selected_option' merged."
         elif [[ "$action" == "(D)elete" ]]; then
-            git branch -D "$selected_option" && echo "Branch '$selected_option' deleted."
+            read "confirmation?Are you sure you want to delete '$selected_option'? (y/n): "
+
+            if [[ "$confirmation" =~ ^(yes|y|Y)$ ]]; then
+                git branch -D "$selected_option" && echo "Branch '$selected_option' deleted."
+            else
+                echo "The branch $selected_option hasn't be deleted."
+            fi
         else
             echo "Action canceled."
         fi
