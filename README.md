@@ -1,8 +1,8 @@
 # branch
 
-🪵 Bash Utility to Enhance Git Branch Management
+🪵 Enhance Git Branch Management
 
-Version : 1.2.6
+Version : 1.2.7
 
 ## 🚀 Installation
 
