@@ -15,7 +15,7 @@ You can download it using `Hombrew` or `apt`.
 brew install fzf # or apt install fzf
 ```
 
-Refer to [fzp repository](https://github.com/junegunn/fzf) to more informations.
+Refer to [fzf repository](https://github.com/junegunn/fzf) to more informations.
 
 ### Via Homebrew
 
@@ -83,7 +83,7 @@ Create a branch with a [conventionnal name](https://tilburgsciencehub.com/buildi
 - [ ] Enable installation via Homebrew
 - [ ] Enable installation via apt
 - [x] Create binary instead a function and `shell` alias
-- [] Rewrite script in `Go`
+- [ ] Rewrite script in `Go`
 
 ## 📑 License
 
