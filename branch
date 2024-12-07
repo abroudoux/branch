@@ -6,7 +6,7 @@ run() {
     if [[ -z "$selected_option" ]]; then
         echo "No branch selected."
         exit 1
-    fibranches
+    fi
 
     selected_option=$(echo "$selected_option" | sed 's/^[ *]*//;s/[ *]*$//')
 

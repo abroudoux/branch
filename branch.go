@@ -5,6 +5,8 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 func main() {
@@ -25,9 +27,18 @@ func main() {
 	isGitInstalled()
 	isInGitRepository()
 
-	selectedBranch := chooseBranch()
+	interactiveMenu := tea.NewProgram(initialModel())
 
-	fmt.Printf("You selected: %s\n", selectedBranch)
+	finalModel, err := interactiveMenu.Run()
+
+	if err != nil {
+		fmt.Printf("Error running the interactive menu: %v\n", err)
+		os.Exit(1)
+	}
+
+	branchMenu := finalModel.(branchChoice)
+
+	fmt.Printf("You selected: %s\n", branchMenu.selectedBranch)
 }
 
 func isGitInstalled() bool {
@@ -128,4 +139,68 @@ func chooseBranch() string {
 			}
 		}
 	}
+}
+
+type branchChoice struct {
+	branches        []string
+	cursor          int
+	selectedBranch  string
+}
+
+func initialModel() branchChoice {
+	branches := getBranchesWithDefaultIndication()
+
+	return branchChoice{
+		branches:        branches,
+		cursor:          0,
+		selectedBranch:  "",
+	}
+}
+
+func (menu branchChoice) Init() tea.Cmd {
+	return nil
+}
+
+func (menu branchChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
+		case tea.KeyMsg:
+			switch msg.String() {
+				case "ctrl+c", "q":
+					return menu, tea.Quit
+				case "down":
+					menu.cursor++
+					if menu.cursor >= len(menu.branches) {
+						menu.cursor = 0
+					}
+				case "up":
+					menu.cursor--
+					if menu.cursor < 0 {
+						menu.cursor = len(menu.branches) - 1
+					}
+				case "enter":
+					menu.selectedBranch = menu.branches[menu.cursor]
+					return menu, tea.Quit
+			}
+	}
+
+	return menu, nil
+}
+
+func (m branchChoice) View() string {
+	s := "\033[H\033[2J"
+	s += "Choose a branch:\n\n"
+
+	for i, branch := range m.branches {
+		cursor := " "
+
+		if m.cursor == i {
+			cursor = ">"
+		}
+
+		s += fmt.Sprintf("%s %s\n", cursor, branch)
+	}
+
+	s += "\nPress q to quit.\n"
+
+	return s
 }
