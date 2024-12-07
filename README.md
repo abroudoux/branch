@@ -2,7 +2,7 @@
 
 🪵 Enhance Git Branch Management
 
-Version : 1.4.1
+Version : 1.4.2
 
 ## 🚀 Installation
 

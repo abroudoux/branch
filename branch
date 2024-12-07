@@ -44,7 +44,9 @@ run() {
             git checkout "$selected_option"
         fi
 
-        read -p "Do you want to checkout on $name? (y/n): " checkout
+        read -p "Do you want to checkout on $name? (y/n) [yes]: " -n 1 checkout
+
+        checkout=${checkout:-y}
 
         if [[ "$checkout" =~ ^(yes|y|Y)$ ]]; then
             git checkout -b "$name" && echo "Branch '$name' created and checked out."
@@ -54,7 +56,9 @@ run() {
     elif [[ "$action" == "(M)erge" ]]; then
         git merge "$selected_option" && echo "Branch '$selected_option' merged."
     elif [[ "$action" == "(D)elete" ]]; then
-        read -p "Are you sure you want to delete '$selected_option'? (y/n): " confirmation
+        read -p "Are you sure you want to delete '$selected_option'? (y/n) [yes]: " -n 1 confirmation
+
+        confirmation=${confirmation:-y}
 
         if [[ "$confirmation" =~ ^(yes|y|Y)$ ]]; then
             git branch -D "$selected_option" && echo "Branch '$selected_option' deleted."
