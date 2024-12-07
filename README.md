@@ -2,7 +2,7 @@
 
 🪵 Enhance Git Branch Management
 
-Version : 1.2.9
+Version : 1.3.0
 
 ## 🚀 Installation
 
@@ -23,16 +23,11 @@ Wip 🚧
 
 ### Manual
 
-You can copy the function in your shell's RC file. Alternatively, You can create a separate Bash script file and copy `pm.sh` into it. You'll need to load it at the beginning of your shell RC file (e.g., `.bashrc`, `.zshrc`, etc.).
+You can paste the binary in your `bin` directory (e.g., on mac it's `/usr/bin/local`). \
+Don't forget to grant execution permissions to the binary.
 
 ```bash
-source path/to/your/script.sh
-```
-
-Don't forget to resource your shell RC file:
-
-```bash
-source ~/.zshrc
+chmox +x branch
 ```
 
 ## 💻 Usage
@@ -70,7 +65,7 @@ Create a branch with a [conventionnal name](https://tilburgsciencehub.com/buildi
 - [ ] Improve UI
 - [ ] Enable installation via Homebrew
 - [ ] Enable installation via apt
-- [ ] Create binary
+- [x] Create binary instead a function and `shell` alias
 
 ## 📑 License
 
