@@ -70,6 +70,7 @@ Create a branch with a [conventionnal name](https://tilburgsciencehub.com/buildi
 - [ ] Improve UI
 - [ ] Enable installation via Homebrew
 - [ ] Enable installation via apt
+- [ ] Create binary
 
 ## 📑 License
 
