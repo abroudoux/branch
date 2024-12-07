@@ -56,12 +56,16 @@ function branch() {
                 return 1
             fi
 
+            if [[ $default_branch != $selected_option ]]; then
+                git checkout "$selected_option"
+            fi
+
             read "checkout?Do you want to checkout on $name? (y/n): "
 
             if [[ "$checkout" =~ ^(yes|y|Y)$ ]]; then
                 git checkout -b "$name" && echo "Branch '$name' created and checked out."
             else
-                git branch "$name" && echo "Branch '$name' based on '$selected_option' created."
+                git branch "$name" && git checkout $default_branch && echo "Branch '$name' based on '$selected_option' created."
             fi
         elif [[ "$action" == "(M)erge" ]]; then
             git merge "$selected_option" && echo "Branch '$selected_option' merged."
