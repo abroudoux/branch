@@ -2,7 +2,7 @@
 
 🪵 Enhance Git Branch Management
 
-Version : 1.3.2
+Version : 1.3.3
 
 ## 🚀 Installation
 
@@ -32,13 +32,22 @@ chmox +x branch
 
 ## 💻 Usage
 
-`branch` allows you to manage your GÒit branches with various and commons actions. Once you're in interactive mode, either by using `run` / the `-r` flag or simply by running `branch`, you can manage your branches.
+`branch` allows you to manage your Git branches with various and commons actions. Once you're in interactive mode, either by using `run` / the `-r` flag or simply by running `branch`, you can manage your branches with basics options, like `Copy the name`, `Checkout`, `Delete`, `Create a new branch from` or `Merge`.
 
 ```bash
-branch run
+branch run # or branch
 ```
 
-From this menu, you can select a branch and choose to delete it, move on it, and perform many more actions (more features coming soon).
+```bash
+    (E)xit
+    (D)elete
+    (M)erge
+    (B)ranch
+    (C)heckout
+  > (N)ame
+--------------------------
+  Choose an action:
+```
 
 You can also list all your branches using the `--list` / `-l` flag.
 
@@ -70,3 +79,7 @@ Create a branch with a [conventionnal name](https://tilburgsciencehub.com/buildi
 ## 📑 License
 
 This project is under MIT license. For more information, please see the file [LICENSE](./LICENSE).
+
+```
+
+```

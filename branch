@@ -94,7 +94,7 @@ while [[ $# -gt 0 ]]; do
             exit
             ;;
         --version|-v)
-            echo "1.3.2"
+            echo "1.3.3"
             exit
             ;;
         --help|-h)
