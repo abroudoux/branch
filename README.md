@@ -83,6 +83,7 @@ Create a branch with a [conventionnal name](https://tilburgsciencehub.com/buildi
 - [ ] Enable installation via Homebrew
 - [ ] Enable installation via apt
 - [x] Create binary instead a function and `shell` alias
+- [] Rewrite script in `Go`
 
 ## 📑 License
 
