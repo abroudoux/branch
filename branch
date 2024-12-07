@@ -6,7 +6,7 @@ run() {
     if [[ -z "$selected_option" ]]; then
         echo "No branch selected."
         exit 1
-    fi
+    fibranches
 
     selected_option=$(echo "$selected_option" | sed 's/^[ *]*//;s/[ *]*$//')
 
@@ -58,7 +58,7 @@ run() {
     elif [[ "$action" == "(D)elete" ]]; then
         read -p "Are you sure you want to delete '$selected_option'? (y/n) [yes]: " -n 1 confirmation
 
-        confirmation=${confirmation:-y}
+        checkout=${checkout:-y}
 
         if [[ "$confirmation" =~ ^(yes|y|Y)$ ]]; then
             git branch -D "$selected_option" && echo "Branch '$selected_option' deleted."
@@ -107,7 +107,7 @@ while [[ $# -gt 0 ]]; do
             exit
             ;;
         --version|-v)
-            echo "1.4.2"
+            echo "1.4.1"
             exit
             ;;
         --help|-h)

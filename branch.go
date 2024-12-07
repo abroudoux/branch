@@ -11,14 +11,8 @@ func main() {
 	isGitInstalled()
 	isInGitRepository()
 
-	branches := getBranches()
+	branches := getBranchesWithDefaultIndication()
 
-	if len(branches) == 0 {
-		fmt.Println("No branches found")
-		os.Exit(1)
-	}
-
-	fmt.Println("Branches:")
 	for _, branch := range branches {
 		fmt.Println(branch)
 	}
@@ -49,7 +43,7 @@ func isInGitRepository() bool {
 }
 
 func getBranches() []string {
-	cmd := exec.Command("git", "branch", "--format='%(refname:short)'")
+	cmd := exec.Command("git", "branch", "--format=%(refname:short)")
 	branches, err := cmd.Output()
 
 	if err != nil {
@@ -58,4 +52,32 @@ func getBranches() []string {
 	}
 
 	return strings.Fields(string(branches))
+}
+
+func getDefaultBranch() string {
+	cmd := exec.Command("git", "symbolic-ref", "--short", "HEAD")
+	defaultBranch, err := cmd.Output()
+
+	if err != nil {
+		fmt.Println("Error getting default branch", err)
+		os.Exit(1)
+	}
+
+	return strings.TrimSpace(string(defaultBranch))
+}
+
+func getBranchesWithDefaultIndication() []string {
+	branches := getBranches()
+	defaultBranch := getDefaultBranch()
+	branchesWithDefaultIndication := []string{}
+
+	for _, branch := range branches {
+		if branch == defaultBranch {
+			branchesWithDefaultIndication = append(branchesWithDefaultIndication, "* " + branch)
+		} else {
+			branchesWithDefaultIndication = append(branchesWithDefaultIndication, "  " + branch)
+		}
+	}
+
+	return branchesWithDefaultIndication
 }
