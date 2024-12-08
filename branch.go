@@ -315,6 +315,11 @@ func doAction(branch string, action string) {
 }
 
 func deleteBranch(branch string) {
+	if !askConfirmation(fmt.Sprintf("Are you sure you want to delete '%s'?", branch)) {
+		fmt.Println("Branch deletion cancelled")
+		return
+	}
+
 	cmd := exec.Command("git", "branch", "-D", branch)
 	err := cmd.Run()
 
@@ -339,14 +344,7 @@ func mergeBranch(branch string) {
 }
 
 func createBranch(branch string) {
-	var newBranchName string
-	fmt.Print("Enter the name of the new branch: ")
-	_, err := fmt.Scanln(&newBranchName)
-
-	if err != nil {
-		fmt.Println("Error reading input:", err)
-		os.Exit(1)
-	}
+	newBranchName := askInput("Enter the name of the new branch: ")
 
 	branches := getBranches()
 	for _, branch := range branches {
@@ -359,7 +357,7 @@ func createBranch(branch string) {
 	defaultBranch := getDefaultBranch()
 	if branch != defaultBranch {
 		cmd := exec.Command("git", "checkout", branch)
-		err = cmd.Run()
+		err := cmd.Run()
 
 		if err != nil {
 			fmt.Println("Error checking out default branch:", err)
@@ -367,34 +365,53 @@ func createBranch(branch string) {
 		}
 	}
 
-	var checkout string
-	fmt.Printf("Do you want to checkout on '%s'? (y/n) [yes]: ", newBranchName)
-	_, err = fmt.Scanln(&checkout)
+	if (askConfirmation("Do you want to checkout on the new branch?")) {
+		cmd := exec.Command("git", "checkout", "-b", newBranchName)
+		err := cmd.Run()
+
+		if err != nil {
+			fmt.Println("Error creating branch:", err)
+			os.Exit(1)
+		}
+	} else {
+		cmd := exec.Command("git", "branch", newBranchName)
+		err := cmd.Run()
+
+		if err != nil {
+			fmt.Println("Error creating branch:", err)
+			os.Exit(1)
+		}
+	}
+
+	fmt.Printf("Branch '%s' based on '%s' created\n", newBranchName, branch)
+}
+
+func askConfirmation(message string) bool {
+	var confirmation string
+	fmt.Printf("%s (y/n) [yes]: ", message)
+	_, err := fmt.Scanln(&confirmation)
 
 	if err != nil {
 		fmt.Println("Error reading input:", err)
 		os.Exit(1)
 	}
 
-	if (checkout == "y" || checkout == "yes" || checkout == "" || checkout == "Y") {
-		cmd := exec.Command("git", "checkout", "-b", newBranchName)
-		err = cmd.Run()
-
-		if err != nil {
-			fmt.Println("Error creating branch:", err)
-			os.Exit(1)
-		}
-
-		fmt.Printf("Branch '%s' based on '%s' created and checked out\n", newBranchName, branch)
-	} else {
-		cmd := exec.Command("git", "branch", newBranchName)
-		err = cmd.Run()
-
-		if err != nil {
-			fmt.Println("Error creating branch:", err)
-			os.Exit(1)
-		}
-
-		fmt.Printf("Branch '%s' based on '%s' created\n", newBranchName, branch)
+	if (confirmation == "y" || confirmation == "yes" || confirmation == "" || confirmation == "Y") {
+		return true
 	}
+
+	return false
+}
+
+func askInput(message string) string {
+	var input string
+	fmt.Print(message)
+	_, err := fmt.Scanln(&input)
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		os.Exit(1)
+	}
+
+	return input
 }
