@@ -31,8 +31,6 @@ func main() {
 		return
 	}
 
-	fmt.Printf("You chose the action: %s\n", action)
-
 	doAction(branch, action)
 }
 
@@ -307,6 +305,12 @@ func doAction(branch string, action string) {
 		case "Delete":
 			deleteBranch(branch)
 			return
+		case "Merge":
+			mergeBranch(branch)
+			return
+		case "Branch":
+			createBranch(branch)
+			return
 	}
 }
 
@@ -320,4 +324,77 @@ func deleteBranch(branch string) {
 	}
 
 	fmt.Printf("Branch %s deleted\n", branch)
+}
+
+func mergeBranch(branch string) {
+	cmd := exec.Command("git", "merge", branch)
+	err := cmd.Run()
+
+	if err != nil {
+		fmt.Println("Error merging branch", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Branch %s merged\n", branch)
+}
+
+func createBranch(branch string) {
+	var newBranchName string
+	fmt.Print("Enter the name of the new branch: ")
+	_, err := fmt.Scanln(&newBranchName)
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		os.Exit(1)
+	}
+
+	branches := getBranches()
+	for _, branch := range branches {
+		if branch == newBranchName {
+			fmt.Printf("Branch '%s' already exists.\n", newBranchName)
+			return
+		}
+	}
+
+	defaultBranch := getDefaultBranch()
+	if branch != defaultBranch {
+		cmd := exec.Command("git", "checkout", branch)
+		err = cmd.Run()
+
+		if err != nil {
+			fmt.Println("Error checking out default branch:", err)
+			os.Exit(1)
+		}
+	}
+
+	var checkout string
+	fmt.Printf("Do you want to checkout on '%s'? (y/n) [yes]: ", newBranchName)
+	_, err = fmt.Scanln(&checkout)
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		os.Exit(1)
+	}
+
+	if (checkout == "y" || checkout == "yes" || checkout == "" || checkout == "Y") {
+		cmd := exec.Command("git", "checkout", "-b", newBranchName)
+		err = cmd.Run()
+
+		if err != nil {
+			fmt.Println("Error creating branch:", err)
+			os.Exit(1)
+		}
+
+		fmt.Printf("Branch '%s' based on '%s' created and checked out\n", newBranchName, branch)
+	} else {
+		cmd := exec.Command("git", "branch", newBranchName)
+		err = cmd.Run()
+
+		if err != nil {
+			fmt.Println("Error creating branch:", err)
+			os.Exit(1)
+		}
+
+		fmt.Printf("Branch '%s' based on '%s' created\n", newBranchName, branch)
+	}
 }
