@@ -317,6 +317,9 @@ func doAction(branch string, action string) {
 		case "Checkout":
 			checkoutBranch(branch)
 			return
+		case "Name":
+			copyName(branch)
+			return
 	}
 }
 
@@ -446,4 +449,17 @@ func checkoutBranch(branch string) {
 	}
 
 	fmt.Printf("Branch %s checked out\n", branch)
+}
+
+func copyName(branch string) {
+	cmd := exec.Command("pbcopy")
+	cmd.Stdin = strings.NewReader(branch)
+	err := cmd.Run()
+
+	if err != nil {
+		fmt.Println("Error copying branch name:", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Branch name '%s' copied to clipboard\n", branch)
 }

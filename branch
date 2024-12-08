@@ -20,7 +20,7 @@ run() {
     fi
 
     if [[ "$action" == "(N)ame" ]]; then
-        echo -n "$selected_option" | pbcopy && git push && echo "Branch '$selected_option' copied to clipboard."
+        echo -n "$selected_option" | pbcopy && echo "Branch '$selected_option' copied to clipboard."
     elif [[ "$action" == "(C)heckout" ]]; then
         git checkout "$selected_option" && echo "Branch '$selected_option' checked out."
     elif [[ "$action" == "(R)ename" ]]; then
