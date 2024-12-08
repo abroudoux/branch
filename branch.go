@@ -20,6 +20,8 @@ type Config struct {
 	Ui struct {
 		CursorColor string `json:"cursorColor"`
 		BranchColor string `json:"branchColor"`
+		BranchSelectedColor string `json:"branchSelectedColor"`
+		ActionSelectedColor string `json:"actionSelectedColor"`
 	} `json:"Ui"`
 }
 
@@ -170,46 +172,45 @@ func (menu branchChoice) Init() tea.Cmd {
 
 func (menu branchChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		switch msg.String() {
-		case "ctrl+c", "q":
-			return menu, tea.Quit
-		case "down":
-			menu.cursor++
-			if menu.cursor >= len(menu.branches) {
-				menu.cursor = 0
+		case tea.KeyMsg:
+			switch msg.String() {
+				case "ctrl+c", "q":
+					return menu, tea.Quit
+				case "down":
+					menu.cursor++
+					if menu.cursor >= len(menu.branches) {
+						menu.cursor = 0
+					}
+				case "up":
+					menu.cursor--
+					if menu.cursor < 0 {
+						menu.cursor = len(menu.branches) - 1
+					}
+				case "enter":
+					menu.selectedBranch = menu.branches[menu.cursor]
+					return menu, tea.Quit
 			}
-		case "up":
-			menu.cursor--
-			if menu.cursor < 0 {
-				menu.cursor = len(menu.branches) - 1
-			}
-		case "enter":
-			menu.selectedBranch = menu.branches[menu.cursor]
-			return menu, tea.Quit
-		}
 	}
 
 	return menu, nil
 }
 
 func (menu branchChoice) View() string {
-	s := "\033[H\033[2J"
-	s += "Choose a branch:\n\n"
+    s := "\033[H\033[2J"
+    s += "Choose a branch:\n\n"
 
-	for i, branch := range menu.branches {
-		cursor := " "
+    for i, branch := range menu.branches {
+        cursor := " "
 
-		if menu.cursor == i {
-			cursor = renderCursor()
-		}
+        if menu.cursor == i {
+            cursor = renderCursor()
+            s += fmt.Sprintf("%s %s\n", cursor, renderBranchSelected(branch, true))
+        } else {
+            s += fmt.Sprintf("%s %s\n", cursor, renderBranchSelected(branch, false))
+        }
+    }
 
-		s += fmt.Sprintf("%s %s\n", cursor, branch)
-	}
-
-	s += "\nPress q to quit.\n"
-
-	return s
+    return s
 }
 
 type actionChoice struct {
@@ -276,13 +277,12 @@ func (menu actionChoice) View() string {
 		cursor := " "
 
 		if menu.cursor == i {
-			cursor = renderCursor()
-		}
-
-		s += fmt.Sprintf("%s %s\n", cursor, action)
+            cursor = renderCursor()
+            s += fmt.Sprintf("%s %s\n", cursor, renderActionSelected(action, true))
+        } else {
+            s += fmt.Sprintf("%s %s\n", cursor, renderActionSelected(action, false))
+        }
 	}
-
-	s += "\nPress q to quit.\n"
 
 	return s
 }
@@ -505,5 +505,19 @@ func renderCursor() string {
 }
 
 func renderBranch(branchName string) string {
-    return fmt.Sprintf("\033[%sm%s\033[0m", config.Ui.BranchColor ,branchName)
+    return fmt.Sprintf("\033[%sm%s\033[0m", config.Ui.BranchColor, branchName)
+}
+
+func renderBranchSelected(branchName string, isSelected bool) string {
+    if isSelected {
+        return fmt.Sprintf("\033[%sm%s\033[0m", config.Ui.BranchSelectedColor, branchName)
+    }
+    return branchName
+}
+
+func renderActionSelected(action string, isSelected bool) string {
+    if isSelected {
+        return fmt.Sprintf("\033[%sm%s\033[0m", config.Ui.ActionSelectedColor, action)
+    }
+    return action
 }
