@@ -2,7 +2,7 @@
 
 🪵 Enhance Git Branch Management
 
-Version : 2.0.1
+Version : 2.0.2
 
 ## 🚀 Installation
 
@@ -56,6 +56,8 @@ You can also list all your branches using the `--list` / `-l` flag.
 branch --list
 ```
 
+If you want to personnalize `branch`, refer to `config.json`
+
 ## 🧑‍🤝‍🧑 Contributing
 
 To contribute, fork the repository and open a pull request detailling your changes.
@@ -77,6 +79,7 @@ Create a branch with a [conventionnal name](https://tilburgsciencehub.com/buildi
 - [ ] Enable installation via apt
 - [x] Create binary instead a function and `shell` alias
 - [x] Rewrite script in `Go`
+- [ ] Add theme configuration
 
 ## 📑 License
 

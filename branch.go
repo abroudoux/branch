@@ -314,7 +314,7 @@ func flagMode() {
 		chooseBranch()
 	} else if arg == "-v" || arg == "--verbose" {
 		fmt.Println(asciiArt)
-		fmt.Println("2.0.1")
+		fmt.Println("2.0.2")
 	} else if arg == "-l" || arg == "--list" {
 		printBranches()
 	} else if arg == "-h" || arg == "--help" {
