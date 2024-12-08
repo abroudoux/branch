@@ -11,34 +11,18 @@ import (
 
 func main() {
 	if len(os.Args) > 1 {
-		arg := os.Args[1]
-
-		if arg == "run" || arg == "-r" {
-			chooseBranch()
-		} else  if arg == "-v" || arg == "--verbose" {
-			fmt.Println("2.0.0")
-		} else if arg == "-l" || arg == "--list" {
-			printBranches()
-		} else if arg == "-h" || arg == "--help" {
-			printHelpManual()
-		}
+		flagMode()
 	}
 
 	isGitInstalled()
 	isInGitRepository()
 
-	interactiveMenu := tea.NewProgram(initialModel())
+	branch := chooseBranch()
+	action := chooseAction(branch)
 
-	finalModel, err := interactiveMenu.Run()
+	fmt.Printf("You chose the action: %s\n", action)
 
-	if err != nil {
-		fmt.Printf("Error running the interactive menu: %v\n", err)
-		os.Exit(1)
-	}
-
-	branchMenu := finalModel.(branchChoice)
-
-	fmt.Printf("You selected: %s\n", branchMenu.selectedBranch)
+	doAction(branch, action)
 }
 
 func isGitInstalled() bool {
@@ -96,9 +80,9 @@ func getBranchesWithDefaultIndication() []string {
 
 	for _, branch := range branches {
 		if branch == defaultBranch {
-			branchesWithDefaultIndication = append(branchesWithDefaultIndication, "* " + branch)
+			branchesWithDefaultIndication = append(branchesWithDefaultIndication, "* "+branch)
 		} else {
-			branchesWithDefaultIndication = append(branchesWithDefaultIndication, "  " + branch)
+			branchesWithDefaultIndication = append(branchesWithDefaultIndication, "  "+branch)
 		}
 	}
 
@@ -123,22 +107,8 @@ func printBranches() {
 	}
 }
 
-func chooseBranch() string {
-	branches := getBranchesWithDefaultIndication()
-	cursor := 0
-
-	for {
-		fmt.Print("\033[H\033[2J")
-		fmt.Println("Press Enter to select a branch.")
-
-		for i, branch := range branches {
-			if i == cursor {
-				fmt.Printf("> %s\n", branch)
-			} else {
-				fmt.Printf("  %s\n", branch)
-			}
-		}
-	}
+func cleanString(s string) string {
+	return strings.TrimSpace(strings.TrimPrefix(s, "*"))
 }
 
 type branchChoice struct {
@@ -147,7 +117,7 @@ type branchChoice struct {
 	selectedBranch  string
 }
 
-func initialModel() branchChoice {
+func initialBranchModel() branchChoice {
 	branches := getBranchesWithDefaultIndication()
 
 	return branchChoice{
@@ -163,24 +133,24 @@ func (menu branchChoice) Init() tea.Cmd {
 
 func (menu branchChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-		case tea.KeyMsg:
-			switch msg.String() {
-				case "ctrl+c", "q":
-					return menu, tea.Quit
-				case "down":
-					menu.cursor++
-					if menu.cursor >= len(menu.branches) {
-						menu.cursor = 0
-					}
-				case "up":
-					menu.cursor--
-					if menu.cursor < 0 {
-						menu.cursor = len(menu.branches) - 1
-					}
-				case "enter":
-					menu.selectedBranch = menu.branches[menu.cursor]
-					return menu, tea.Quit
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "ctrl+c", "q":
+			return menu, tea.Quit
+		case "down":
+			menu.cursor++
+			if menu.cursor >= len(menu.branches) {
+				menu.cursor = 0
 			}
+		case "up":
+			menu.cursor--
+			if menu.cursor < 0 {
+				menu.cursor = len(menu.branches) - 1
+			}
+		case "enter":
+			menu.selectedBranch = menu.branches[menu.cursor]
+			return menu, tea.Quit
+		}
 	}
 
 	return menu, nil
@@ -204,3 +174,123 @@ func (m branchChoice) View() string {
 
 	return s
 }
+
+type actionChoice struct {
+	actions        []string
+	cursor         int
+	selectedAction string
+	selectedBranch string
+}
+
+func initialActionModel(branch string) actionChoice {
+	actions := []string{
+		"(E)xit",
+		"(D)elete",
+		"(M)erge",
+		"(B)ranch",
+		"(R)ename",
+		"(C)heckout",
+		"(N)ame",
+	}
+
+	return actionChoice{
+		actions:        actions,
+		cursor:         0,
+		selectedAction: "",
+		selectedBranch: branch,
+	}
+}
+
+func (menu actionChoice) Init() tea.Cmd {
+	return nil
+}
+
+func (menu actionChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
+		case tea.KeyMsg:
+			switch msg.String() {
+				case "ctrl+c", "q":
+					return menu, tea.Quit
+				case "down":
+					menu.cursor++
+					if menu.cursor >= len(menu.actions) {
+						menu.cursor = 0
+					}
+				case "up":
+					menu.cursor--
+					if menu.cursor < 0 {
+						menu.cursor = len(menu.actions) - 1
+					}
+				case "enter":
+					menu.selectedAction = menu.actions[menu.cursor]
+					return menu, tea.Quit
+			}
+	}
+
+	return menu, nil
+}
+
+func (m actionChoice) View() string {
+	s := "\033[H\033[2J"
+	s += fmt.Sprintf("Branch: %s\n\n", m.selectedBranch)
+	s += "Choose an action:\n\n"
+
+	for i, action := range m.actions {
+		cursor := " "
+
+		if m.cursor == i {
+			cursor = ">"
+		}
+
+		s += fmt.Sprintf("%s %s\n", cursor, action)
+	}
+
+	s += "\nPress q to quit.\n"
+
+	return s
+}
+
+func chooseBranch() string {
+	branchesMenu := tea.NewProgram(initialBranchModel())
+
+	finalModel, err := branchesMenu.Run()
+
+	if err != nil {
+		fmt.Printf("Error running the interactive menu: %v\n", err)
+		os.Exit(1)
+	}
+
+	branchMenu := finalModel.(branchChoice)
+	return cleanString(branchMenu.selectedBranch)
+}
+
+func chooseAction(selectedBranch string) string {
+	actionsMenu := tea.NewProgram(initialActionModel(selectedBranch))
+	finalActionModel, err := actionsMenu.Run()
+
+	if err != nil {
+		fmt.Printf("Error running the actions menu: %v\n", err)
+		os.Exit(1)
+	}
+
+	actionMenu := finalActionModel.(actionChoice)
+	return cleanString(actionMenu.selectedAction)
+}
+
+func flagMode() {
+	arg := os.Args[1]
+
+	if arg == "run" || arg == "-r" {
+		chooseBranch()
+	} else if arg == "-v" || arg == "--verbose" {
+		fmt.Println("2.0.0")
+	} else if arg == "-l" || arg == "--list" {
+		printBranches()
+	} else if arg == "-h" || arg == "--help" {
+		printHelpManual()
+	}
+
+	os.Exit(0)
+}
+
+func doAction(branch string, action string) {}
