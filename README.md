@@ -2,20 +2,11 @@
 
 🪵 Enhance Git Branch Management
 
-Version : 1.4.2
+Version : 2.0.0
 
 ## 🚀 Installation
 
 ### Requirements
-
-You'll need to install `fzf` to use `branch`.\
-You can download it using `Hombrew` or `apt`.
-
-```bash
-brew install fzf # or apt install fzf
-```
-
-Refer to [fzf repository](https://github.com/junegunn/fzf) to more informations.
 
 ### Via Homebrew
 
@@ -39,22 +30,24 @@ branch run # or branch
 ```
 
 ```bash
+Choose a branch:
+
     develop
     feature/ui
 > * main
---------------------------
-  Select a branch:
 ```
 
 ```bash
-  (E)xit
-  (D)elete
-  (M)erge
-  (B)ranch
-  (C)heckout
-> (N)ame
---------------------------
-  Choose an action:
+Branch: name
+
+Choose an action:
+
+  Exit
+  Delete
+  Merge
+  Branch
+  Checkout
+> Name
 ```
 
 You can also list all your branches using the `--list` / `-l` flag.
@@ -83,7 +76,7 @@ Create a branch with a [conventionnal name](https://tilburgsciencehub.com/buildi
 - [ ] Enable installation via Homebrew
 - [ ] Enable installation via apt
 - [x] Create binary instead a function and `shell` alias
-- [ ] Rewrite script in `Go`
+- [x] Rewrite script in `Go`
 
 ## 📑 License
 
