@@ -299,4 +299,25 @@ func flagMode() {
 	os.Exit(0)
 }
 
-func doAction(branch string, action string) {}
+func doAction(branch string, action string) {
+	switch action {
+		case "Exit":
+			fmt.Println("Exiting...")
+			return
+		case "Delete":
+			deleteBranch(branch)
+			return
+	}
+}
+
+func deleteBranch(branch string) {
+	cmd := exec.Command("git", "branch", "-D", branch)
+	err := cmd.Run()
+
+	if err != nil {
+		fmt.Println("Error deleting branch", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Branch %s deleted\n", branch)
+}
