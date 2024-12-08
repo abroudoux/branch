@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	_ "embed"
 	"fmt"
 	"os"
@@ -292,7 +293,7 @@ func flagMode() {
 		chooseBranch()
 	} else if arg == "-v" || arg == "--verbose" {
 		fmt.Println(asciiArt)
-		fmt.Println("2.0.0")
+		fmt.Println("2.0.1")
 	} else if arg == "-l" || arg == "--list" {
 		printBranches()
 	} else if arg == "-h" || arg == "--help" {
@@ -401,16 +402,18 @@ func createBranch(branch string) {
 }
 
 func askConfirmation(message string) bool {
-	var confirmation string
+	reader := bufio.NewReader(os.Stdin)
 	fmt.Printf("%s (y/n) [yes]: ", message)
-	_, err := fmt.Scanln(&confirmation)
 
+	input, err := reader.ReadString('\n')
 	if err != nil {
 		fmt.Println("Error reading input:", err)
 		os.Exit(1)
 	}
 
-	if (confirmation == "y" || confirmation == "yes" || confirmation == "" || confirmation == "Y") {
+	confirmation := strings.TrimSpace(input)
+
+	if confirmation == "" || strings.EqualFold(confirmation, "y") || strings.EqualFold(confirmation, "yes") {
 		return true
 	}
 
