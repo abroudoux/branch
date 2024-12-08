@@ -314,6 +314,9 @@ func doAction(branch string, action string) {
 		case "Rename":
 			renameBranch(branch)
 			return
+		case "Checkout":
+			checkoutBranch(branch)
+			return
 	}
 }
 
@@ -431,4 +434,16 @@ func renameBranch(branch string) {
 	}
 
 	fmt.Printf("Branch %s renamed to %s\n", branch, newBranchName)
+}
+
+func checkoutBranch(branch string) {
+	cmd := exec.Command("git", "checkout", branch)
+	err := cmd.Run()
+
+	if err != nil {
+		fmt.Println("Error checking out branch", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Branch %s checked out\n", branch)
 }
