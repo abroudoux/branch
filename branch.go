@@ -311,6 +311,9 @@ func doAction(branch string, action string) {
 		case "Branch":
 			createBranch(branch)
 			return
+		case "Rename":
+			renameBranch(branch)
+			return
 	}
 }
 
@@ -414,4 +417,18 @@ func askInput(message string) string {
 	}
 
 	return input
+}
+
+func renameBranch(branch string) {
+	newBranchName := askInput("Enter the new name for the branch: ")
+
+	cmd := exec.Command("git", "branch", "-m", branch, newBranchName)
+	err := cmd.Run()
+
+	if err != nil {
+		fmt.Println("Error renaming branch", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Branch %s renamed to %s\n", branch, newBranchName)
 }
