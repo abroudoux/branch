@@ -5,7 +5,6 @@ import (
 	_ "embed"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
@@ -15,6 +14,9 @@ import (
 
 //go:embed assets/ascii.txt
 var asciiArt string
+//go:embed config.json
+var configFile string
+var config Config
 
 type Config struct {
 	Ui struct {
@@ -25,16 +27,8 @@ type Config struct {
 	} `json:"Ui"`
 }
 
-var config Config
-
 func loadConfig() {
-	data, err := ioutil.ReadFile("config.json")
-	if err != nil {
-		fmt.Println("Error loading config file:", err)
-		os.Exit(1)
-	}
-
-	err = json.Unmarshal(data, &config)
+	err := json.Unmarshal([]byte(configFile), &config)
 	if err != nil {
 		fmt.Println("Error parsing config file:", err)
 		os.Exit(1)
