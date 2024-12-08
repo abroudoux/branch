@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
 	"os"
 	"os/exec"
@@ -8,6 +9,9 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 )
+
+//go:embed assets/ascii.txt
+var asciiArt string
 
 func main() {
 	if len(os.Args) > 1 {
@@ -287,6 +291,7 @@ func flagMode() {
 	if arg == "run" || arg == "-r" {
 		chooseBranch()
 	} else if arg == "-v" || arg == "--verbose" {
+		fmt.Println(asciiArt)
 		fmt.Println("2.0.0")
 	} else if arg == "-l" || arg == "--list" {
 		printBranches()
