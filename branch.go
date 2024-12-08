@@ -3,7 +3,9 @@ package main
 import (
 	"bufio"
 	_ "embed"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
@@ -14,7 +16,31 @@ import (
 //go:embed assets/ascii.txt
 var asciiArt string
 
+type Config struct {
+	Ui struct {
+		CursorColor string `json:"cursorColor"`
+	} `json:"Ui"`
+}
+
+var config Config
+
+func loadConfig() {
+	data, err := ioutil.ReadFile("config.json")
+	if err != nil {
+		fmt.Println("Error loading config file:", err)
+		os.Exit(1)
+	}
+
+	err = json.Unmarshal(data, &config)
+	if err != nil {
+		fmt.Println("Error parsing config file:", err)
+		os.Exit(1)
+	}
+}
+
 func main() {
+	loadConfig()
+
 	if len(os.Args) > 1 {
 		flagMode()
 	}
@@ -174,7 +200,7 @@ func (menu branchChoice) View() string {
 		cursor := " "
 
 		if menu.cursor == i {
-			cursor = ">"
+			cursor = renderCursor()
 		}
 
 		s += fmt.Sprintf("%s %s\n", cursor, branch)
@@ -249,7 +275,7 @@ func (menu actionChoice) View() string {
 		cursor := " "
 
 		if menu.cursor == i {
-			cursor = ">"
+			cursor = renderCursor()
 		}
 
 		s += fmt.Sprintf("%s %s\n", cursor, action)
@@ -470,4 +496,9 @@ func copyName(branch string) {
 	}
 
 	fmt.Printf("Branch name '%s' copied to clipboard\n", branch)
+}
+
+func renderCursor() string {
+	render := fmt.Sprintf("\033[%sm>\033[0m", config.Ui.CursorColor)
+	return render
 }
