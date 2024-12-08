@@ -19,6 +19,7 @@ var asciiArt string
 type Config struct {
 	Ui struct {
 		CursorColor string `json:"cursorColor"`
+		BranchSelected string `json:"branchSelected"`
 	} `json:"Ui"`
 }
 
@@ -268,7 +269,7 @@ func (menu actionChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (menu actionChoice) View() string {
 	s := "\033[H\033[2J"
-	s += fmt.Sprintf("Branch: %s\n\n", menu.selectedBranch)
+    s += fmt.Sprintf("Branch: %s\n\n", renderBranchSelected(menu.selectedBranch))
 	s += "Choose an action:\n\n"
 
 	for i, action := range menu.actions {
@@ -501,4 +502,8 @@ func copyName(branch string) {
 func renderCursor() string {
 	render := fmt.Sprintf("\033[%sm>\033[0m", config.Ui.CursorColor)
 	return render
+}
+
+func renderBranchSelected(branchName string) string {
+    return fmt.Sprintf("\033[%sm%s\033[0m", config.Ui.BranchSelected ,branchName)
 }
