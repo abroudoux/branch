@@ -19,7 +19,7 @@ var asciiArt string
 type Config struct {
 	Ui struct {
 		CursorColor string `json:"cursorColor"`
-		BranchSelected string `json:"branchSelected"`
+		BranchColor string `json:"branchColor"`
 	} `json:"Ui"`
 }
 
@@ -269,7 +269,7 @@ func (menu actionChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (menu actionChoice) View() string {
 	s := "\033[H\033[2J"
-    s += fmt.Sprintf("Branch: %s\n\n", renderBranchSelected(menu.selectedBranch))
+    s += fmt.Sprintf("Branch: %s\n\n", renderBranch(menu.selectedBranch))
 	s += "Choose an action:\n\n"
 
 	for i, action := range menu.actions {
@@ -357,7 +357,7 @@ func doAction(branch string, action string) {
 }
 
 func deleteBranch(branch string) {
-	if !askConfirmation(fmt.Sprintf("Are you sure you want to delete '%s'?", branch)) {
+	if !askConfirmation(fmt.Sprintf("Are you sure you want to delete '%s'?", renderBranch(branch))) {
 		fmt.Println("Branch deletion cancelled")
 		return
 	}
@@ -370,7 +370,7 @@ func deleteBranch(branch string) {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Branch %s deleted\n", branch)
+	fmt.Printf("Branch %s deleted\n", renderBranch(branch))
 }
 
 func mergeBranch(branch string) {
@@ -391,7 +391,7 @@ func createBranch(branch string) {
 	branches := getBranches()
 	for _, branch := range branches {
 		if branch == newBranchName {
-			fmt.Printf("Branch '%s' already exists.\n", newBranchName)
+			fmt.Printf("Branch '%s' already exists.\n", renderBranch(newBranchName))
 			return
 		}
 	}
@@ -425,7 +425,7 @@ func createBranch(branch string) {
 		}
 	}
 
-	fmt.Printf("Branch '%s' based on '%s' created\n", newBranchName, branch)
+	fmt.Printf("Branch '%s' based on '%s' created\n", renderBranch(newBranchName), renderBranch(branch))
 }
 
 func askConfirmation(message string) bool {
@@ -471,7 +471,7 @@ func renameBranch(branch string) {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Branch %s renamed to %s\n", branch, newBranchName)
+	fmt.Printf("Branch %s renamed to %s\n", renderBranch(branch), renderBranch(newBranchName))
 }
 
 func checkoutBranch(branch string) {
@@ -483,7 +483,7 @@ func checkoutBranch(branch string) {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Branch %s checked out\n", branch)
+	fmt.Printf("Branch %s checked out\n", renderBranch(branch))
 }
 
 func copyName(branch string) {
@@ -496,7 +496,7 @@ func copyName(branch string) {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Branch name '%s' copied to clipboard\n", branch)
+	fmt.Printf("Branch name '%s' copied to clipboard\n", renderBranch(branch))
 }
 
 func renderCursor() string {
@@ -504,6 +504,6 @@ func renderCursor() string {
 	return render
 }
 
-func renderBranchSelected(branchName string) string {
-    return fmt.Sprintf("\033[%sm%s\033[0m", config.Ui.BranchSelected ,branchName)
+func renderBranch(branchName string) string {
+    return fmt.Sprintf("\033[%sm%s\033[0m", config.Ui.BranchColor ,branchName)
 }
