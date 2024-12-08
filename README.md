@@ -80,6 +80,7 @@ Create a branch with a [conventionnal name](https://tilburgsciencehub.com/buildi
 - [x] Create binary instead a function and `shell` alias
 - [x] Rewrite script in `Go`
 - [ ] Add theme configuration
+- [ ] Performance optimization
 
 ## 📑 License
 
