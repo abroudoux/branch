@@ -18,14 +18,25 @@ func main() {
 	isInGitRepository()
 
 	branch := chooseBranch()
+
+	if branch == "" {
+		fmt.Println("No branch selected. Exiting...")
+		return
+	}
+
 	action := chooseAction(branch)
+
+	if action == "" {
+		fmt.Println("No action selected. Exiting...")
+		return
+	}
 
 	fmt.Printf("You chose the action: %s\n", action)
 
 	doAction(branch, action)
 }
 
-func isGitInstalled() bool {
+func isGitInstalled() {
 	cmd := exec.Command("git", "version")
 	err := cmd.Run()
 
@@ -33,11 +44,9 @@ func isGitInstalled() bool {
 		fmt.Println("Error checking if git is installed", err)
 		os.Exit(1)
 	}
-
-	return true
 }
 
-func isInGitRepository() bool {
+func isInGitRepository() {
 	cmd := exec.Command("git", "rev-parse", "--is-inside-work-tree")
 	err := cmd.Run()
 
@@ -45,8 +54,6 @@ func isInGitRepository() bool {
 		fmt.Println("Error checking if in git repository", err)
 		os.Exit(1)
 	}
-
-	return true
 }
 
 func getBranches() []string {
@@ -122,7 +129,7 @@ func initialBranchModel() branchChoice {
 
 	return branchChoice{
 		branches:        branches,
-		cursor:          0,
+		cursor:          len(branches) - 1,
 		selectedBranch:  "",
 	}
 }
@@ -156,14 +163,14 @@ func (menu branchChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return menu, nil
 }
 
-func (m branchChoice) View() string {
+func (menu branchChoice) View() string {
 	s := "\033[H\033[2J"
 	s += "Choose a branch:\n\n"
 
-	for i, branch := range m.branches {
+	for i, branch := range menu.branches {
 		cursor := " "
 
-		if m.cursor == i {
+		if menu.cursor == i {
 			cursor = ">"
 		}
 
@@ -184,18 +191,18 @@ type actionChoice struct {
 
 func initialActionModel(branch string) actionChoice {
 	actions := []string{
-		"(E)xit",
-		"(D)elete",
-		"(M)erge",
-		"(B)ranch",
-		"(R)ename",
-		"(C)heckout",
-		"(N)ame",
+		"Exit",
+		"Delete",
+		"Merge",
+		"Branch",
+		"Rename",
+		"Checkout",
+		"Name",
 	}
 
 	return actionChoice{
 		actions:        actions,
-		cursor:         0,
+		cursor:         len(actions) - 1,
 		selectedAction: "",
 		selectedBranch: branch,
 	}
@@ -230,15 +237,15 @@ func (menu actionChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return menu, nil
 }
 
-func (m actionChoice) View() string {
+func (menu actionChoice) View() string {
 	s := "\033[H\033[2J"
-	s += fmt.Sprintf("Branch: %s\n\n", m.selectedBranch)
+	s += fmt.Sprintf("Branch: %s\n\n", menu.selectedBranch)
 	s += "Choose an action:\n\n"
 
-	for i, action := range m.actions {
+	for i, action := range menu.actions {
 		cursor := " "
 
-		if m.cursor == i {
+		if menu.cursor == i {
 			cursor = ">"
 		}
 
@@ -252,7 +259,6 @@ func (m actionChoice) View() string {
 
 func chooseBranch() string {
 	branchesMenu := tea.NewProgram(initialBranchModel())
-
 	finalModel, err := branchesMenu.Run()
 
 	if err != nil {
