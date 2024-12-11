@@ -27,59 +27,77 @@ type Config struct {
 	} `json:"Ui"`
 }
 
-func loadConfig() {
+func loadConfig() error {
 	err := json.Unmarshal([]byte(configFile), &config)
 	if err != nil {
-		fmt.Println("Error parsing config file:", err)
-		os.Exit(1)
+		return fmt.Errorf("error parsing config file: %v", err)
 	}
+
+	return nil
 }
 
 func main() {
-	loadConfig()
+	err := loadConfig()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
 	if len(os.Args) > 1 {
 		flagMode()
 	}
 
-	isGitInstalled()
-	isInGitRepository()
-
-	branch := chooseBranch()
-
-	if branch == "" {
-		fmt.Println("No branch selected. Exiting...")
-		return
+	err = isGitInstalled()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
-	action := chooseAction(branch)
-
-	if action == "" {
-		fmt.Println("No action selected. Exiting...")
-		return
+	err = isInGitRepository()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
-	doAction(branch, action)
+	branch, err := chooseBranch()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	action, err := chooseAction(branch)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	err = doAction(branch, action)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
 
-func isGitInstalled() {
+func isGitInstalled() error {
 	cmd := exec.Command("git", "version")
 	err := cmd.Run()
 
 	if err != nil {
-		fmt.Println("Error checking if git is installed", err)
-		os.Exit(1)
+		return fmt.Errorf("git is not installed: %v", err)
 	}
+
+	return nil
 }
 
-func isInGitRepository() {
+func isInGitRepository() error {
 	cmd := exec.Command("git", "rev-parse", "--is-inside-work-tree")
 	err := cmd.Run()
 
 	if err != nil {
-		fmt.Println("Error checking if in git repository", err)
-		os.Exit(1)
+		return fmt.Errorf("error checking if in git repository: %v", err)
 	}
+
+	return nil
 }
 
 func getBranches() []string {
@@ -281,30 +299,28 @@ func (menu actionChoice) View() string {
 	return s
 }
 
-func chooseBranch() string {
+func chooseBranch() (string, error) {
 	branchesMenu := tea.NewProgram(initialBranchModel())
 	finalModel, err := branchesMenu.Run()
 
 	if err != nil {
-		fmt.Printf("Error running the interactive menu: %v\n", err)
-		os.Exit(1)
+		return "", fmt.Errorf("error running the branches menu: %v", err)
 	}
 
 	branchMenu := finalModel.(branchChoice)
-	return cleanString(branchMenu.selectedBranch)
+	return cleanString(branchMenu.selectedBranch), nil
 }
 
-func chooseAction(selectedBranch string) string {
+func chooseAction(selectedBranch string) (string, error) {
 	actionsMenu := tea.NewProgram(initialActionModel(selectedBranch))
 	finalActionModel, err := actionsMenu.Run()
 
 	if err != nil {
-		fmt.Printf("Error running the actions menu: %v\n", err)
-		os.Exit(1)
+		return "", fmt.Errorf("error running the actions menu: %v", err)
 	}
 
 	actionMenu := finalActionModel.(actionChoice)
-	return cleanString(actionMenu.selectedAction)
+	return cleanString(actionMenu.selectedAction), nil
 }
 
 func flagMode() {
@@ -324,69 +340,64 @@ func flagMode() {
 	os.Exit(0)
 }
 
-func doAction(branch string, action string) {
+func doAction(branch string, action string) error {
 	switch action {
 		case "Exit":
 			fmt.Println("Exiting...")
-			return
+			return nil
 		case "Delete":
-			deleteBranch(branch)
-			return
+			return deleteBranch(branch)
 		case "Merge":
-			mergeBranch(branch)
-			return
+			return mergeBranch(branch)
 		case "Branch":
-			createBranch(branch)
-			return
+			return createBranch(branch)
 		case "Rename":
-			renameBranch(branch)
-			return
+			return renameBranch(branch)
 		case "Checkout":
-			checkoutBranch(branch)
-			return
+			return checkoutBranch(branch)
 		case "Name":
-			copyName(branch)
-			return
+			return copyName(branch)
+		default:
+			return fmt.Errorf("invalid action: %s", action)
 	}
 }
 
-func deleteBranch(branch string) {
+func deleteBranch(branch string) error {
 	if !askConfirmation(fmt.Sprintf("Are you sure you want to delete '%s'?", renderBranch(branch))) {
-		fmt.Println("Branch deletion cancelled")
-		return
+		return fmt.Errorf("branch deletion cancelled")
 	}
 
 	cmd := exec.Command("git", "branch", "-D", branch)
 	err := cmd.Run()
 
 	if err != nil {
-		fmt.Println("Error deleting branch", err)
-		os.Exit(1)
+		return fmt.Errorf("error deleting branch: %v", err)
 	}
 
 	fmt.Printf("Branch %s deleted\n", renderBranch(branch))
+	return nil
 }
 
-func mergeBranch(branch string) {
+func mergeBranch(branch string) error {
 	cmd := exec.Command("git", "merge", branch)
 	err := cmd.Run()
 
 	if err != nil {
 		fmt.Println("Error merging branch", err)
-		os.Exit(1)
+		return fmt.Errorf("error merging branch: %v", err)
 	}
 
 	fmt.Printf("Branch %s merged\n", branch)
+	return nil
 }
 
-func createBranch(branch string) {
+func createBranch(branch string) error {
 	newBranchName := askInput("Enter the name of the new branch: ")
 
 	branches := getBranches()
 	for _, branch := range branches {
 		if branch == newBranchName {
-			fmt.Printf("Branch '%s' already exists.\n", renderBranch(newBranchName))
-			return
+			return fmt.Errorf("branch '%s' already exists", renderBranch(newBranchName))
 		}
 	}
 
@@ -396,8 +407,7 @@ func createBranch(branch string) {
 		err := cmd.Run()
 
 		if err != nil {
-			fmt.Println("Error checking out default branch:", err)
-			os.Exit(1)
+			return fmt.Errorf("error checking out default branch: %v", err)
 		}
 	}
 
@@ -406,20 +416,19 @@ func createBranch(branch string) {
 		err := cmd.Run()
 
 		if err != nil {
-			fmt.Println("Error creating branch:", err)
-			os.Exit(1)
+			return fmt.Errorf("error creating branch: %v", err)
 		}
 	} else {
 		cmd := exec.Command("git", "branch", newBranchName)
 		err := cmd.Run()
 
 		if err != nil {
-			fmt.Println("Error creating branch:", err)
-			os.Exit(1)
+			return fmt.Errorf("error creating branch: %v", err)
 		}
 	}
 
 	fmt.Printf("Branch '%s' based on '%s' created\n", renderBranch(newBranchName), renderBranch(branch))
+	return nil
 }
 
 func askConfirmation(message string) bool {
@@ -454,43 +463,43 @@ func askInput(message string) string {
 	return input
 }
 
-func renameBranch(branch string) {
+func renameBranch(branch string) error {
 	newBranchName := askInput("Enter the new name for the branch: ")
 
 	cmd := exec.Command("git", "branch", "-m", branch, newBranchName)
 	err := cmd.Run()
 
 	if err != nil {
-		fmt.Println("Error renaming branch", err)
-		os.Exit(1)
+		return fmt.Errorf("error renaming branch: %v", err)
 	}
 
 	fmt.Printf("Branch %s renamed to %s\n", renderBranch(branch), renderBranch(newBranchName))
+	return nil
 }
 
-func checkoutBranch(branch string) {
+func checkoutBranch(branch string) error {
 	cmd := exec.Command("git", "checkout", branch)
 	err := cmd.Run()
 
 	if err != nil {
-		fmt.Println("Error checking out branch", err)
-		os.Exit(1)
+		return fmt.Errorf("error checking out branch: %v", err)
 	}
 
 	fmt.Printf("Branch %s checked out\n", renderBranch(branch))
+	return nil
 }
 
-func copyName(branch string) {
+func copyName(branch string) error {
 	cmd := exec.Command("pbcopy")
 	cmd.Stdin = strings.NewReader(branch)
 	err := cmd.Run()
 
 	if err != nil {
-		fmt.Println("Error copying branch name:", err)
-		os.Exit(1)
+		return fmt.Errorf("error copying branch name: %v", err)
 	}
 
 	fmt.Printf("Branch name '%s' copied to clipboard\n", renderBranch(branch))
+	return nil
 }
 
 func renderCursor() string {
