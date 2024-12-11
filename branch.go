@@ -314,7 +314,6 @@ func chooseBranch() (string, error) {
 func chooseAction(selectedBranch string) (string, error) {
 	actionsMenu := tea.NewProgram(initialActionModel(selectedBranch))
 	finalActionModel, err := actionsMenu.Run()
-
 	if err != nil {
 		return "", fmt.Errorf("error running the actions menu: %v", err)
 	}
@@ -330,7 +329,7 @@ func flagMode() {
 		chooseBranch()
 	} else if arg == "-v" || arg == "--verbose" {
 		fmt.Println(asciiArt)
-		fmt.Println("2.0.2")
+		fmt.Println("2.0.3")
 	} else if arg == "-l" || arg == "--list" {
 		printBranches()
 	} else if arg == "-h" || arg == "--help" {
@@ -369,7 +368,6 @@ func deleteBranch(branch string) error {
 
 	cmd := exec.Command("git", "branch", "-D", branch)
 	err := cmd.Run()
-
 	if err != nil {
 		return fmt.Errorf("error deleting branch: %v", err)
 	}
@@ -381,7 +379,6 @@ func deleteBranch(branch string) error {
 func mergeBranch(branch string) error {
 	cmd := exec.Command("git", "merge", branch)
 	err := cmd.Run()
-
 	if err != nil {
 		fmt.Println("Error merging branch", err)
 		return fmt.Errorf("error merging branch: %v", err)
@@ -392,7 +389,10 @@ func mergeBranch(branch string) error {
 }
 
 func createBranch(branch string) error {
-	newBranchName := askInput("Enter the name of the new branch: ")
+	newBranchName, err := askInput("Enter the name of the new branch: ")
+	if err != nil {
+		return fmt.Errorf("error reading input: %v", err)
+	}
 
 	branches := getBranches()
 	for _, branch := range branches {
@@ -405,7 +405,6 @@ func createBranch(branch string) error {
 	if branch != defaultBranch {
 		cmd := exec.Command("git", "checkout", branch)
 		err := cmd.Run()
-
 		if err != nil {
 			return fmt.Errorf("error checking out default branch: %v", err)
 		}
@@ -414,14 +413,12 @@ func createBranch(branch string) error {
 	if (askConfirmation("Do you want to checkout on the new branch?")) {
 		cmd := exec.Command("git", "checkout", "-b", newBranchName)
 		err := cmd.Run()
-
 		if err != nil {
 			return fmt.Errorf("error creating branch: %v", err)
 		}
 	} else {
 		cmd := exec.Command("git", "branch", newBranchName)
 		err := cmd.Run()
-
 		if err != nil {
 			return fmt.Errorf("error creating branch: %v", err)
 		}
@@ -450,25 +447,25 @@ func askConfirmation(message string) bool {
 	return false
 }
 
-func askInput(message string) string {
+func askInput(message string) (string, error) {
 	var input string
 	fmt.Print(message)
 	_, err := fmt.Scanln(&input)
-
 	if err != nil {
-		fmt.Println("Error reading input:", err)
-		os.Exit(1)
+		return "", fmt.Errorf("error reading input: %v", err)
 	}
 
-	return input
+	return input, nil
 }
 
 func renameBranch(branch string) error {
-	newBranchName := askInput("Enter the new name for the branch: ")
+	newBranchName, err := askInput("Enter the new name for the branch: ")
+	if err != nil {
+		return fmt.Errorf("error reading input: %v", err)
+	}
 
 	cmd := exec.Command("git", "branch", "-m", branch, newBranchName)
-	err := cmd.Run()
-
+	err = cmd.Run()
 	if err != nil {
 		return fmt.Errorf("error renaming branch: %v", err)
 	}
@@ -480,7 +477,6 @@ func renameBranch(branch string) error {
 func checkoutBranch(branch string) error {
 	cmd := exec.Command("git", "checkout", branch)
 	err := cmd.Run()
-
 	if err != nil {
 		return fmt.Errorf("error checking out branch: %v", err)
 	}
@@ -493,7 +489,6 @@ func copyName(branch string) error {
 	cmd := exec.Command("pbcopy")
 	cmd.Stdin = strings.NewReader(branch)
 	err := cmd.Run()
-
 	if err != nil {
 		return fmt.Errorf("error copying branch name: %v", err)
 	}

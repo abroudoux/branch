@@ -2,11 +2,9 @@
 
 🪵 Enhance Git Branch Management
 
-Version : 2.0.2
+Version : 2.0.3
 
 ## 🚀 Installation
-
-### Requirements
 
 ### Via Homebrew
 
@@ -26,7 +24,7 @@ chmox +x branch
 `branch` allows you to manage your Git branches with various and commons actions. Once you're in interactive mode, either by using `run` / the `-r` flag or simply by running `branch`, you can manage your branches with basics options, like `Copy the name`, `Checkout`, `Delete`, `Create a new branch from` or `Merge`.
 
 ```bash
-branch run # or branch
+branch run
 ```
 
 ```bash
@@ -80,7 +78,7 @@ Create a branch with a [conventionnal name](https://tilburgsciencehub.com/buildi
 - [x] Create binary instead a function and `shell` alias
 - [x] Rewrite script in `Go`
 - [ ] Add theme configuration
-- [ ] Performance optimization
+- [x] Performance optimization
 
 ## 📑 License
 
