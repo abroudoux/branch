@@ -322,7 +322,7 @@ func flagMode() {
 		chooseBranch()
 	} else if flag == "-v" || flag == "--version" {
 		fmt.Println(asciiArt)
-		fmt.Println("2.0.3")
+		fmt.Println("2.0.4")
 	} else if flag == "-l" || flag == "--list" {
 		printBranches()
 	} else if flag == "-h" || flag == "--help" {
@@ -363,7 +363,7 @@ func deleteBranch(branch string) error {
 		return fmt.Errorf("error deleting branch: %v", err)
 	}
 
-	fmt.Printf("Branch %s deleted\n", renderBranch(branch))
+	println("Branch '%s' deleted", renderBranch(branch))
 	return nil
 }
 
@@ -375,7 +375,18 @@ func mergeBranch(branch string) error {
 		return fmt.Errorf("error merging branch: %v", err)
 	}
 
-	fmt.Printf("Branch %s merged\n", branch)
+	println("Branch '%s' merged", branch)
+
+	shouldDeleteBranch := askConfirmation("Do you want to delete the merged branch?")
+	if shouldDeleteBranch {
+		err := deleteBranch(branch)
+		if err != nil {
+			return fmt.Errorf("error deleting branch: %v", err)
+		}
+	}
+
+	println("Branch '%s' deleted", renderBranch(branch))
+
 	return nil
 }
 
@@ -422,7 +433,6 @@ func createBranch(branch string) error {
 func askConfirmation(message string) bool {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Printf("%s (y/n) [yes]: ", message)
-
 	input, err := reader.ReadString('\n')
 	if err != nil {
 		fmt.Println("Error reading input:", err)
