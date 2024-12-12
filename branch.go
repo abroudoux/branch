@@ -327,7 +327,7 @@ func flagMode() {
 
 	if arg == "run" || arg == "-r" {
 		chooseBranch()
-	} else if arg == "-v" || arg == "--verbose" {
+	} else if arg == "-v" || arg == "--version" {
 		fmt.Println(asciiArt)
 		fmt.Println("2.0.3")
 	} else if arg == "-l" || arg == "--list" {

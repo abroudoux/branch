@@ -72,12 +72,12 @@ Create a branch with a [conventionnal name](https://tilburgsciencehub.com/buildi
 
 - [x] Option to create new branch
 - [ ] Add Git status for branches (Untracked, Renamed, Modified, etc.)
-- [ ] Improve UI
+- [x] Improve UI
 - [ ] Enable installation via Homebrew
 - [ ] Enable installation via apt
 - [x] Create binary instead a function and `shell` alias
 - [x] Rewrite script in `Go`
-- [ ] Add theme configuration
+- [x] Add theme configuration
 - [x] Performance optimization
 
 ## 📑 License
