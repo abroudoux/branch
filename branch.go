@@ -45,6 +45,7 @@ func main() {
 
 	if len(os.Args) > 1 {
 		flagMode()
+		os.Exit(0)
 	}
 
 	err = isGitInstalled()
@@ -81,7 +82,6 @@ func main() {
 func isGitInstalled() error {
 	cmd := exec.Command("git", "version")
 	err := cmd.Run()
-
 	if err != nil {
 		return fmt.Errorf("git is not installed: %v", err)
 	}
@@ -92,7 +92,6 @@ func isGitInstalled() error {
 func isInGitRepository() error {
 	cmd := exec.Command("git", "rev-parse", "--is-inside-work-tree")
 	err := cmd.Run()
-
 	if err != nil {
 		return fmt.Errorf("error checking if in git repository: %v", err)
 	}
@@ -103,7 +102,6 @@ func isInGitRepository() error {
 func getBranches() []string {
 	cmd := exec.Command("git", "branch", "--format=%(refname:short)")
 	branches, err := cmd.Output()
-
 	if err != nil {
 		fmt.Println("Error getting branches", err)
 		os.Exit(1)
@@ -115,7 +113,6 @@ func getBranches() []string {
 func getDefaultBranch() string {
 	cmd := exec.Command("git", "symbolic-ref", "--short", "HEAD")
 	defaultBranch, err := cmd.Output()
-
 	if err != nil {
 		fmt.Println("Error getting default branch", err)
 		os.Exit(1)
@@ -142,12 +139,9 @@ func getBranchesWithDefaultIndication() []string {
 
 func printHelpManual() {
 	fmt.Println("Usage: branch [options]")
-	fmt.Println("Options:")
-	fmt.Println("branch [run | -r]        Start the interactive branch selection")
-	fmt.Println("branch [--list | -l]     List all branches")
-	fmt.Println("branch [--help | -h]     Show this help message")
-
-	os.Exit(0)
+	fmt.Printf("  %-20s %s\n", "branch [run | -r]", "Start the interactive branch selection")
+	fmt.Printf("  %-20s %s\n", "branch [--list | -l]", "List all branches")
+	fmt.Printf("  %-20s %s\n", "branch [--help | -h]", "Show this help message")
 }
 
 func printBranches() {
@@ -302,7 +296,6 @@ func (menu actionChoice) View() string {
 func chooseBranch() (string, error) {
 	branchesMenu := tea.NewProgram(initialBranchModel())
 	finalModel, err := branchesMenu.Run()
-
 	if err != nil {
 		return "", fmt.Errorf("error running the branches menu: %v", err)
 	}
@@ -323,20 +316,18 @@ func chooseAction(selectedBranch string) (string, error) {
 }
 
 func flagMode() {
-	arg := os.Args[1]
+	flag := os.Args[1]
 
-	if arg == "run" || arg == "-r" {
+	if flag == "run" || flag == "-r" {
 		chooseBranch()
-	} else if arg == "-v" || arg == "--version" {
+	} else if flag == "-v" || flag == "--version" {
 		fmt.Println(asciiArt)
 		fmt.Println("2.0.3")
-	} else if arg == "-l" || arg == "--list" {
+	} else if flag == "-l" || flag == "--list" {
 		printBranches()
-	} else if arg == "-h" || arg == "--help" {
+	} else if flag == "-h" || flag == "--help" {
 		printHelpManual()
 	}
-
-	os.Exit(0)
 }
 
 func doAction(branch string, action string) error {
@@ -439,7 +430,6 @@ func askConfirmation(message string) bool {
 	}
 
 	confirmation := strings.TrimSpace(input)
-
 	if confirmation == "" || strings.EqualFold(confirmation, "y") || strings.EqualFold(confirmation, "yes") {
 		return true
 	}
@@ -459,9 +449,13 @@ func askInput(message string) (string, error) {
 }
 
 func renameBranch(branch string) error {
-	newBranchName, err := askInput("Enter the new name for the branch: ")
+	newBranchName, err := askInput("Enter a name for the new branch: ")
 	if err != nil {
 		return fmt.Errorf("error reading input: %v", err)
+	}
+
+	if strings.Contains(newBranchName, " ") {
+		return fmt.Errorf("error: the branch name must not contain spaces")
 	}
 
 	cmd := exec.Command("git", "branch", "-m", branch, newBranchName)
