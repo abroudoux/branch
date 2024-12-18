@@ -1,6 +1,6 @@
 # branch
 
-🪵 Enhance Git Branch Management
+🌿 Enhance Git Branch Management
 
 Version : 2.0.4
 
