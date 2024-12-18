@@ -18,24 +18,6 @@ var asciiArt string
 var configFile string
 var config Config
 
-type Config struct {
-	Ui struct {
-		CursorColor string `json:"cursorColor"`
-		BranchColor string `json:"branchColor"`
-		BranchSelectedColor string `json:"branchSelectedColor"`
-		ActionSelectedColor string `json:"actionSelectedColor"`
-	} `json:"Ui"`
-}
-
-func loadConfig() error {
-	err := json.Unmarshal([]byte(configFile), &config)
-	if err != nil {
-		return fmt.Errorf("error parsing config file: %v", err)
-	}
-
-	return nil
-}
-
 func main() {
 	err := loadConfig()
 	if err != nil {
@@ -77,6 +59,24 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+type Config struct {
+	Ui struct {
+		CursorColor string `json:"cursorColor"`
+		BranchColor string `json:"branchColor"`
+		BranchSelectedColor string `json:"branchSelectedColor"`
+		ActionSelectedColor string `json:"actionSelectedColor"`
+	} `json:"Ui"`
+}
+
+func loadConfig() error {
+	err := json.Unmarshal([]byte(configFile), &config)
+	if err != nil {
+		return fmt.Errorf("error parsing config file: %v", err)
+	}
+
+	return nil
 }
 
 func isGitInstalled() error {
@@ -364,7 +364,34 @@ func deleteBranch(branch string) error {
 	}
 
 	println("Branch '%s' deleted", renderBranch(branch))
+
+	if hasRemoteBranch(branch) && askConfirmation(fmt.Sprintf("Do you want to delete '%s' remotly?", renderBranch(branch))) {
+		err := deleteRemoteBranch(branch)
+		if err != nil {
+			return fmt.Errorf("error deleting remote branch: %v", err)
+		}
+	}
 	return nil
+}
+
+func deleteRemoteBranch(branch string) error {
+	if !askConfirmation(fmt.Sprintf("Are you sure you want to delete '%s' remotly?", renderBranch(branch))) {
+		return fmt.Errorf("branch deletion cancelled")
+	}
+
+	cmd := exec.Command("git", "push", "origin", "--delete", branch)
+	err := cmd.Run()
+	if err != nil {
+		return fmt.Errorf("error deleting remote branch: %v", err)
+	}
+
+	return nil
+}
+
+func hasRemoteBranch(branchName string) bool {
+	cmd := exec.Command("git", "ls-remote", "--heads", "origin", branchName)
+	err := cmd.Run()
+	return err == nil
 }
 
 func mergeBranch(branch string) error {
