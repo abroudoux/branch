@@ -1,0 +1,26 @@
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+
+project_name: branch
+builds:
+  - id: branch
+    main: ./branch.go
+    binary: branch
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+archives:
+  - id: branch
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - README.md
+      - LICENSE
+      - assets/*
+      - config.json
