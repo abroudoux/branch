@@ -14,4 +14,4 @@ tasks:
   clean:
     desc: Clean the app
     cmds:
-      - rm -f dist
+      - rm -rf dist
