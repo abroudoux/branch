@@ -178,24 +178,24 @@ func (menu branchChoice) Init() tea.Cmd {
 
 func (menu branchChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-		case tea.KeyMsg:
-			switch msg.String() {
-				case "ctrl+c", "q":
-					return menu, tea.Quit
-				case "down":
-					menu.cursor++
-					if menu.cursor >= len(menu.branches) {
-						menu.cursor = 0
-					}
-				case "up":
-					menu.cursor--
-					if menu.cursor < 0 {
-						menu.cursor = len(menu.branches) - 1
-					}
-				case "enter":
-					menu.selectedBranch = menu.branches[menu.cursor]
-					return menu, tea.Quit
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "ctrl+c", "q":
+			return menu, tea.Quit
+		case "down":
+			menu.cursor++
+			if menu.cursor >= len(menu.branches) {
+				menu.cursor = 0
 			}
+		case "up":
+			menu.cursor--
+			if menu.cursor < 0 {
+				menu.cursor = len(menu.branches) - 1
+			}
+		case "enter":
+			menu.selectedBranch = menu.branches[menu.cursor]
+			return menu, tea.Quit
+		}
 	}
 
 	return menu, nil
@@ -251,24 +251,24 @@ func (menu actionChoice) Init() tea.Cmd {
 
 func (menu actionChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-		case tea.KeyMsg:
-			switch msg.String() {
-				case "ctrl+c", "q":
-					return menu, tea.Quit
-				case "down":
-					menu.cursor++
-					if menu.cursor >= len(menu.actions) {
-						menu.cursor = 0
-					}
-				case "up":
-					menu.cursor--
-					if menu.cursor < 0 {
-						menu.cursor = len(menu.actions) - 1
-					}
-				case "enter":
-					menu.selectedAction = menu.actions[menu.cursor]
-					return menu, tea.Quit
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "ctrl+c", "q":
+			return menu, tea.Quit
+		case "down":
+			menu.cursor++
+			if menu.cursor >= len(menu.actions) {
+				menu.cursor = 0
 			}
+		case "up":
+			menu.cursor--
+			if menu.cursor < 0 {
+				menu.cursor = len(menu.actions) - 1
+			}
+		case "enter":
+			menu.selectedAction = menu.actions[menu.cursor]
+			return menu, tea.Quit
+		}
 	}
 
 	return menu, nil
@@ -322,7 +322,7 @@ func flagMode() {
 		chooseBranch()
 	} else if flag == "-v" || flag == "--version" {
 		fmt.Println(asciiArt)
-		fmt.Println("2.0.4")
+		fmt.Println("2.1.0")
 	} else if flag == "-l" || flag == "--list" {
 		printBranches()
 	} else if flag == "-h" || flag == "--help" {
