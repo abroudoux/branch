@@ -20,3 +20,11 @@ checksum:
   name_template: "checksums.txt"
 changelog:
   sort: asc
+brews:
+  - name: branch
+    homepage: https://github.com/abroudoux/branch
+    license: MIT
+    repository:
+      owner: abroudoux
+      name: homebrew-tap
+      branch: main
