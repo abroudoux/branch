@@ -2,7 +2,7 @@ name: goreleaser
 
 on:
   push:
-    tags:
+    branches:
       - "*"
 
 jobs:
@@ -31,3 +31,4 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HOMEBREW_TAP_REPO_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_REPO_GITHUB_TOKEN }}

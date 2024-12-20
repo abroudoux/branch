@@ -24,7 +24,12 @@ brews:
   - name: branch
     homepage: https://github.com/abroudoux/branch
     license: MIT
+    commit_author:
+      name: Arthur Broudoux
+      email: arthur.broudoux@gmail.com
+    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
     repository:
       owner: abroudoux
       name: homebrew-tap
       branch: main
+      token: "{{ .Env.HOMEBREW_TAP_REPO_GITHUB_TOKEN }}"
