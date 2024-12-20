@@ -24,7 +24,7 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-          git config --global user.email "
+          git config --global arthur.broudoux@gmail.com"
 
       - name: Setup Go
         uses: actions/setup-go@v5
