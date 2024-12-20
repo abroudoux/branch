@@ -8,6 +8,10 @@
 
 Wip 🚧
 
+### Via apt
+
+Wip 🚧
+
 ### Manual
 
 You can paste the binary in your `bin` directory (e.g., on mac it's `/usr/bin/local`). \
