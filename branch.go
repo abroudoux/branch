@@ -322,7 +322,13 @@ func flagMode() {
 		chooseBranch()
 	} else if flag == "-v" || flag == "--version" {
 		fmt.Println(asciiArt)
-		fmt.Println("2.1.0")
+		latestVersion, err := getLatestRelease()
+		if err != nil {
+			fmt.Println("Latest version not available")
+			os.Exit(1)
+		}
+
+		fmt.Printf("Latest version: %s\n", latestVersion)
 	} else if flag == "-l" || flag == "--list" {
 		printBranches()
 	} else if flag == "-h" || flag == "--help" {

@@ -2,8 +2,6 @@
 
 🌿 Enhance Git Branch Management
 
-Version : 2.1.0
-
 ## 🚀 Installation
 
 ### Via Homebrew
