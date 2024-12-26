@@ -481,11 +481,12 @@ func askConfirmation(message string) bool {
 	}
 
 	confirmation := strings.TrimSpace(input)
-	if confirmation == "" || strings.EqualFold(confirmation, "y") || strings.EqualFold(confirmation, "yes") {
+	switch confirmation {
+	case "", "y", "yes", "Y", "YES":
 		return true
+	default:
+		return false
 	}
-
-	return false
 }
 
 func askInput(message string) (string, error) {
