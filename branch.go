@@ -26,7 +26,11 @@ func main() {
 	}
 
 	if len(os.Args) > 1 {
-		flagMode()
+		err := flagMode()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 		os.Exit(0)
 	}
 
@@ -156,27 +160,27 @@ func cleanString(s string) string {
 	return strings.TrimSpace(strings.TrimPrefix(s, "*"))
 }
 
-type branchChoice struct {
+type BranchChoice struct {
 	branches        []string
 	cursor          int
 	selectedBranch  string
 }
 
-func initialBranchModel() branchChoice {
+func initialBranchModel() BranchChoice {
 	branches := getBranchesWithDefaultIndication()
 
-	return branchChoice{
+	return BranchChoice{
 		branches:        branches,
 		cursor:          len(branches) - 1,
 		selectedBranch:  "",
 	}
 }
 
-func (menu branchChoice) Init() tea.Cmd {
+func (menu BranchChoice) Init() tea.Cmd {
 	return nil
 }
 
-func (menu branchChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (menu BranchChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -201,7 +205,7 @@ func (menu branchChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return menu, nil
 }
 
-func (menu branchChoice) View() string {
+func (menu BranchChoice) View() string {
     s := "\033[H\033[2J"
     s += "Choose a branch:\n\n"
 
@@ -300,7 +304,7 @@ func chooseBranch() (string, error) {
 		return "", fmt.Errorf("error running the branches menu: %v", err)
 	}
 
-	branchMenu := finalModel.(branchChoice)
+	branchMenu := finalModel.(BranchChoice)
 	return cleanString(branchMenu.selectedBranch), nil
 }
 
@@ -315,46 +319,50 @@ func chooseAction(selectedBranch string) (string, error) {
 	return cleanString(actionMenu.selectedAction), nil
 }
 
-func flagMode() {
+func flagMode() error {
 	flag := os.Args[1]
 
-	if flag == "run" || flag == "-r" {
+	switch flag {
+	case "run", "-r":
 		chooseBranch()
-	} else if flag == "-v" || flag == "--version" {
+	case "-v", "--version":
 		fmt.Println(asciiArt)
 		latestVersion, err := getLatestRelease()
 		if err != nil {
-			fmt.Println("Latest version not available")
-			os.Exit(1)
+			return fmt.Errorf("error getting latest version: %v", err)
 		}
 
 		fmt.Printf("Latest version: %s\n", latestVersion)
-	} else if flag == "-l" || flag == "--list" {
+	case "-l", "--list":
 		printBranches()
-	} else if flag == "-h" || flag == "--help" {
+	case "-h", "--help":
+		printHelpManual()
+	default:
 		printHelpManual()
 	}
+
+	return nil
 }
 
 func doAction(branch string, action string) error {
 	switch action {
-		case "Exit":
-			fmt.Println("Exiting...")
-			return nil
-		case "Delete":
-			return deleteBranch(branch)
-		case "Merge":
-			return mergeBranch(branch)
-		case "Branch":
-			return createBranch(branch)
-		case "Rename":
-			return renameBranch(branch)
-		case "Checkout":
-			return checkoutBranch(branch)
-		case "Name":
-			return copyName(branch)
-		default:
-			return fmt.Errorf("invalid action: %s", action)
+	case "Exit":
+		fmt.Println("Exiting...")
+		return nil
+	case "Delete":
+		return deleteBranch(branch)
+	case "Merge":
+		return mergeBranch(branch)
+	case "Branch":
+		return createBranch(branch)
+	case "Rename":
+		return renameBranch(branch)
+	case "Checkout":
+		return checkoutBranch(branch)
+	case "Name":
+		return copyName(branch)
+	default:
+		return fmt.Errorf("invalid action: %s", action)
 	}
 }
 

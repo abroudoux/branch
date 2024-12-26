@@ -4,12 +4,12 @@ tasks:
   run:
     desc: Run the app
     cmds:
-      - GOGLAGS=-mod=mod go run branch.go
+      - GOGLAGS=-mod=mod go run *.go
 
   build:
     desc: Build the app
     cmds:
-      - GOGLAGS=-mod=mod go build -o branch branch.go
+      - GOGLAGS=-mod=mod go build -o branch *.go
 
   clean:
     desc: Clean the app
