@@ -3,83 +3,48 @@ package main
 import (
 	"bufio"
 	_ "embed"
-	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 	"os/exec"
 	"strings"
 
-	root "github.com/abroudoux/branch"
-	repository "github.com/abroudoux/branch/internal"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-//go:embed ../config/config.json
-var embeddedConfigFile []byte
-
-var config Config
-
 func main() {
-	err := loadConfig()
-	if err != nil {
-		printErrorAndExit(err)
-	}
-
 	if len(os.Args) > 1 {
 		err := flagMode()
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			printErrorAndExit(err)
 		}
 		os.Exit(0)
 	}
 
-	err = isGitInstalled()
+	err := isGitInstalled()
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		printErrorAndExit(err)
 	}
 
 	err = isInGitRepository()
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		printErrorAndExit(err)
 	}
 
 	branch, err := chooseBranch()
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		printErrorAndExit(err)
 	}
 
 	action, err := chooseAction(branch)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		printErrorAndExit(err)
 	}
 
 	err = doAction(branch, action)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		printErrorAndExit(err)
 	}
-}
-
-type Config struct {
-	Ui struct {
-		CursorColor string `json:"cursorColor"`
-		BranchColor string `json:"branchColor"`
-		BranchSelectedColor string `json:"branchSelectedColor"`
-		ActionSelectedColor string `json:"actionSelectedColor"`
-	} `json:"Ui"`
-}
-
-func loadConfig() error {
-	err := json.Unmarshal(embeddedConfigFile, &config)
-	if err != nil {
-		return fmt.Errorf("error decoding embedded config: %v", err)
-	}
-	return nil
 }
 
 func isGitInstalled() error {
@@ -325,8 +290,7 @@ func flagMode() error {
 	case "run", "-r":
 		chooseBranch()
 	case "-v", "--version":
-		fmt.Println(root.AsciiArt)
-		latestVersion, err := repository.GetLatestRelease()
+		latestVersion, err := getLatestRelease()
 		if err != nil {
 			return fmt.Errorf("error getting latest version: %v", err)
 		}
@@ -542,24 +506,24 @@ func copyName(branch string) error {
 }
 
 func renderCursor() string {
-	render := fmt.Sprintf("\033[%sm>\033[0m", config.Ui.CursorColor)
+	render := fmt.Sprintf("\033[%sm>\033[0m", "32")
 	return render
 }
 
 func renderBranch(branchName string) string {
-    return fmt.Sprintf("\033[%sm%s\033[0m", config.Ui.BranchColor, branchName)
+    return fmt.Sprintf("\033[%sm%s\033[0m", "38;2;214;112;214", branchName)
 }
 
 func renderBranchSelected(branchName string, isSelected bool) string {
     if isSelected {
-        return fmt.Sprintf("\033[%sm%s\033[0m", config.Ui.BranchSelectedColor, branchName)
+        return fmt.Sprintf("\033[%sm%s\033[0m", "32", branchName)
     }
     return branchName
 }
 
 func renderActionSelected(action string, isSelected bool) string {
     if isSelected {
-        return fmt.Sprintf("\033[%sm%s\033[0m", config.Ui.ActionSelectedColor, action)
+        return fmt.Sprintf("\033[%sm%s\033[0m", "32", action)
     }
     return action
 }
@@ -567,4 +531,15 @@ func renderActionSelected(action string, isSelected bool) string {
 func printErrorAndExit(err error) {
 	fmt.Println(err)
 	os.Exit(1)
+}
+
+func getLatestRelease() (string, error) {
+	url := "https://api.github.com/repos/abroudoux/branch/releases/latest"
+	res, err := http.Get(url)
+	if err != nil {
+		return "", fmt.Errorf("error while fetching latest release: %v", err)
+	}
+
+	latestVersion := res.Header.Get("tag_name")
+	return latestVersion, nil
 }
