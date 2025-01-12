@@ -6,7 +6,13 @@
 
 ### Via Homebrew
 
-Wip 🚧
+```bash
+brew tap abroudoux/tap
+```
+
+```bash
+brew install abroudoux/tap/branch
+```
 
 ### Via apt
 
@@ -74,7 +80,7 @@ Create a branch with a [conventionnal name](https://tilburgsciencehub.com/buildi
 
 - [x] Option to create new branch
 - [x] Improve UI
-- [ ] Enable installation via Homebrew
+- [x] Enable installation via Homebrew
 - [ ] Enable installation via apt
 - [x] Rewrite script in `Go`
 - [x] Add theme configuration
