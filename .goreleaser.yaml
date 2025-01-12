@@ -23,7 +23,6 @@ brews:
     repository:
       owner: abroudoux
       name: homebrew-tap
-      branch: main
     commit_author:
       name: abroudoux
       email: arthur.broudoux@gmail.com
