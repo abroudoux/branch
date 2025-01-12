@@ -1,22 +1,32 @@
-version: 2
-
-before:
-  hooks:
-    - go mod tidy
-
-project_name: branch
 builds:
-  - env:
-      - CGO_ENABLED=0
+  - binary: branch
     goos:
-      - linux
-      - windows
       - darwin
-archives:
-  - format_overrides:
-      - goos: darwin
-        format: tar.gz
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -mod=vendor
+
+release:
+  prerelease: auto
+
+universal_binaries:
+  - replace: true
+
+brews:
+  - name: branch
+    homepage: https://github.com/abroudoux/branch
+    repository:
+      owner: abroudoux
+      name: homebrew-tap
+      branch: main
+    commit_author:
+      name: abroudoux
+      email: arthur.broudoux@gmail.com
+
 checksum:
   name_template: "checksums.txt"
-changelog:
-  sort: asc
