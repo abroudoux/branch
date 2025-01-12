@@ -8,7 +8,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/abroudoux/branch/internal/git"
+	git "github.com/abroudoux/branch/internal/git"
+	repository "github.com/abroudoux/branch/internal/repository"
 	ui "github.com/abroudoux/branch/internal/ui"
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -22,17 +23,14 @@ func main() {
 		os.Exit(0)
 	}
 
-	err := isGitInstalled()
+	err := isInGitRepository()
 	if err != nil {
 		printErrorAndExit(err)
 	}
 
-	err = isInGitRepository()
-	if err != nil {
-		printErrorAndExit(err)
-	}
+	branches := git.GetBranchesWithDefaultIndication()
 
-	branch, err := chooseBranch()
+	branch, err := chooseBranch(branches)
 	if err != nil {
 		printErrorAndExit(err)
 	}
@@ -52,27 +50,25 @@ func isGitInstalled() error {
 	cmd := exec.Command("git", "version")
 	err := cmd.Run()
 	if err != nil {
-		return fmt.Errorf("git is not installed: %v", err)
+		return err
 	}
 
 	return nil
 }
 
 func isInGitRepository() error {
-	cmd := exec.Command("git", "rev-parse", "--is-inside-work-tree")
-	err := cmd.Run()
+	err := isGitInstalled()
 	if err != nil {
-		return fmt.Errorf("error checking if in git repository: %v", err)
+		return err
+	}
+
+	cmd := exec.Command("git", "rev-parse", "--is-inside-work-tree")
+	err = cmd.Run()
+	if err != nil {
+		return err
 	}
 
 	return nil
-}
-
-func printHelpManual() {
-	fmt.Println("Usage: branch [options]")
-	fmt.Printf("  %-20s %s\n", "branch [run | -r]", "Start the interactive branch selection")
-	fmt.Printf("  %-20s %s\n", "branch [--list | -l]", "List all branches")
-	fmt.Printf("  %-20s %s\n", "branch [--help | -h]", "Show this help message")
 }
 
 func printBranches() {
@@ -93,9 +89,7 @@ type BranchChoice struct {
 	selectedBranch  string
 }
 
-func initialBranchModel() BranchChoice {
-	branches := git.GetBranchesWithDefaultIndication()
-
+func initialBranchModel(branches []string) BranchChoice {
 	return BranchChoice{
 		branches:        branches,
 		cursor:          len(branches) - 1,
@@ -224,8 +218,8 @@ func (menu actionChoice) View() string {
 	return s
 }
 
-func chooseBranch() (string, error) {
-	branchesMenu := tea.NewProgram(initialBranchModel())
+func chooseBranch(branches []string) (string, error) {
+	branchesMenu := tea.NewProgram(initialBranchModel(branches))
 	finalModel, err := branchesMenu.Run()
 	if err != nil {
 		return "", fmt.Errorf("error running the branches menu: %v", err)
@@ -251,7 +245,8 @@ func flagMode() error {
 
 	switch flag {
 	case "run", "-r":
-		chooseBranch()
+		branches:= git.GetBranchesWithDefaultIndication()
+		chooseBranch(branches)
 	case "-v", "--version":
 		latestVersion, err := getLatestRelease()
 		if err != nil {
@@ -262,9 +257,9 @@ func flagMode() error {
 	case "-l", "--list":
 		printBranches()
 	case "-h", "--help":
-		printHelpManual()
+		repository.PrintHelpManual()
 	default:
-		printHelpManual()
+		repository.PrintHelpManual()
 	}
 
 	return nil
