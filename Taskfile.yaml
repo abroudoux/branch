@@ -4,14 +4,19 @@ tasks:
   run:
     desc: Run the app
     cmds:
-      - GOGLAGS=-mod=mod go run *.go
+      - GOGLAGS=-mod=mod go build -o bin/branch cmd/main.go && ./branch
 
   build:
     desc: Build the app
     cmds:
-      - GOGLAGS=-mod=mod go build -o branch *.go
+      - GOGLAGS=-mod=mod go build -o bin/branch cmd/main.go
 
   clean:
     desc: Clean the app
     cmds:
       - rm -rf dist
+
+  test:
+    desc: Execute tests
+    cmds:
+      - go test ./tests
