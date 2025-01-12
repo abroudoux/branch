@@ -56,7 +56,7 @@ You can also list all your branches using the `--list` / `-l` flag.
 branch --list
 ```
 
-If you want to personnalize `branch`, refer to `config.json`
+If you want to personnalize `branch` ui, refer to `config.json`
 
 ## 🧑‍🤝‍🧑 Contributing
 
@@ -73,15 +73,12 @@ Create a branch with a [conventionnal name](https://tilburgsciencehub.com/buildi
 ## 📌 Roadmap
 
 - [x] Option to create new branch
-- [ ] Add Git status for branches (Untracked, Renamed, Modified, etc.)
 - [x] Improve UI
 - [ ] Enable installation via Homebrew
 - [ ] Enable installation via apt
-- [x] Create binary instead a function and `shell` alias
 - [x] Rewrite script in `Go`
 - [x] Add theme configuration
-- [x] Performance optimization
 
 ## 📑 License
 
-This project is under MIT license. For more information, please see the file [LICENSE](./LICENSE).
+This project is under [MIT License](LICENSE)
