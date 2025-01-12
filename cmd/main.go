@@ -3,7 +3,6 @@ package main
 import (
 	_ "embed"
 	"fmt"
-	"net/http"
 	"os"
 	"os/exec"
 	"strings"
@@ -248,7 +247,7 @@ func flagMode() error {
 		branches:= git.GetBranchesWithDefaultIndication()
 		chooseBranch(branches)
 	case "-v", "--version":
-		latestVersion, err := getLatestRelease()
+		latestVersion, err := repository.GetLatestRelease()
 		if err != nil {
 			return fmt.Errorf("error getting latest version: %v", err)
 		}
@@ -290,15 +289,4 @@ func doAction(branch string, action string) error {
 func printErrorAndExit(err error) {
 	fmt.Println(err)
 	os.Exit(1)
-}
-
-func getLatestRelease() (string, error) {
-	url := "https://api.github.com/repos/abroudoux/branch/releases/latest"
-	res, err := http.Get(url)
-	if err != nil {
-		return "", fmt.Errorf("error while fetching latest release: %v", err)
-	}
-
-	latestVersion := res.Header.Get("tag_name")
-	return latestVersion, nil
 }
