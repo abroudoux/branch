@@ -68,44 +68,6 @@ func isInGitRepository() error {
 	return nil
 }
 
-func getBranches() []string {
-	cmd := exec.Command("git", "branch", "--format=%(refname:short)")
-	branches, err := cmd.Output()
-	if err != nil {
-		fmt.Println("Error getting branches", err)
-		os.Exit(1)
-	}
-
-	return strings.Fields(string(branches))
-}
-
-func getDefaultBranch() string {
-	cmd := exec.Command("git", "symbolic-ref", "--short", "HEAD")
-	defaultBranch, err := cmd.Output()
-	if err != nil {
-		fmt.Println("Error getting default branch", err)
-		os.Exit(1)
-	}
-
-	return strings.TrimSpace(string(defaultBranch))
-}
-
-func getBranchesWithDefaultIndication() []string {
-	branches := getBranches()
-	defaultBranch := getDefaultBranch()
-	branchesWithDefaultIndication := []string{}
-
-	for _, branch := range branches {
-		if branch == defaultBranch {
-			branchesWithDefaultIndication = append(branchesWithDefaultIndication, "* "+branch)
-		} else {
-			branchesWithDefaultIndication = append(branchesWithDefaultIndication, "  "+branch)
-		}
-	}
-
-	return branchesWithDefaultIndication
-}
-
 func printHelpManual() {
 	fmt.Println("Usage: branch [options]")
 	fmt.Printf("  %-20s %s\n", "branch [run | -r]", "Start the interactive branch selection")
@@ -114,7 +76,7 @@ func printHelpManual() {
 }
 
 func printBranches() {
-	branches := getBranchesWithDefaultIndication()
+	branches := git.GetBranchesWithDefaultIndication()
 
 	for _, branch := range branches {
 		fmt.Println(branch)
@@ -132,7 +94,7 @@ type BranchChoice struct {
 }
 
 func initialBranchModel() BranchChoice {
-	branches := getBranchesWithDefaultIndication()
+	branches := git.GetBranchesWithDefaultIndication()
 
 	return BranchChoice{
 		branches:        branches,

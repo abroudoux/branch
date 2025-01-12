@@ -2,6 +2,7 @@ package git
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 
@@ -52,43 +53,43 @@ func CopyName(branch string) error {
 	return nil
 }
 
-func CreateBranch(branch string) error {
+func CreateBranch(branchSelected string) error {
 	newBranchName, err := utils.AskInput("Enter the name of the new branch: ")
 	if err != nil {
 		return fmt.Errorf("error reading input: %v", err)
 	}
 
-	// branches := getBranches()
-	// for _, branch := range branches {
-	// 	if branch == newBranchName {
-	// 		return fmt.Errorf("branch '%s' already exists", ui.RenderBranch(newBranchName))
-	// 	}
-	// }
+	branches := GetBranches()
+	for _, branch := range branches {
+		if branch == newBranchName {
+			return fmt.Errorf("branch '%s' already exists", ui.RenderBranch(newBranchName))
+		}
+	}
 
-	// defaultBranch := getDefaultBranch()
-	// if branchSelected != defaultBranch {
-	// 	cmd := exec.Command("git", "checkout", branchSelected)
-	// 	err := cmd.Run()
-	// 	if err != nil {
-	// 		return fmt.Errorf("error checking out default branch: %v", err)
-	// 	}
-	// }
+	defaultBranch := GetDefaultBranch()
+	if branchSelected != defaultBranch {
+		cmd := exec.Command("git", "checkout", branchSelected)
+		err := cmd.Run()
+		if err != nil {
+			return fmt.Errorf("error checking out default branch: %v", err)
+		}
+	}
 
-	// if (utils.AskConfirmation("Do you want to checkout on the new branch?")) {
-	// 	cmd := exec.Command("git", "checkout", "-b", newBranchName)
-	// 	err := cmd.Run()
-	// 	if err != nil {
-	// 		return fmt.Errorf("error creating branch: %v", err)
-	// 	}
-	// } else {
-	// 	cmd := exec.Command("git", "branch", newBranchName)
-	// 	err := cmd.Run()
-	// 	if err != nil {
-	// 		return fmt.Errorf("error creating branch: %v", err)
-	// 	}
-	// }
+	if (utils.AskConfirmation("Do you want to checkout on the new branch?")) {
+		cmd := exec.Command("git", "checkout", "-b", newBranchName)
+		err := cmd.Run()
+		if err != nil {
+			return fmt.Errorf("error creating branch: %v", err)
+		}
+	} else {
+		cmd := exec.Command("git", "branch", newBranchName)
+		err := cmd.Run()
+		if err != nil {
+			return fmt.Errorf("error creating branch: %v", err)
+		}
+	}
 
-	fmt.Printf("Branch '%s' based on '%s' created\n", ui.RenderBranch(newBranchName), ui.RenderBranch(branch))
+	fmt.Printf("Branch '%s' based on '%s' created\n", ui.RenderBranch(newBranchName), ui.RenderBranch(branchSelected))
 	return nil
 }
 
@@ -126,14 +127,15 @@ func DeleteBranch(branch string) error {
 		return fmt.Errorf("error deleting branch: %v", err)
 	}
 
-	println("Branch '%s' deleted", ui.RenderBranch(branch))
+	println(fmt.Sprintf("Branch '%s' deleted", ui.RenderBranch(branch)))
 
-	if hasRemoteBranch(branch) && utils.AskConfirmation(fmt.Sprintf("Do you want to delete '%s' remotly?", ui.RenderBranch(branch))) {
+	if utils.AskConfirmation(fmt.Sprintf("Do you want to delete '%s' remotly?", ui.RenderBranch(branch))) {
 		err := deleteRemoteBranch(branch)
 		if err != nil {
 			return fmt.Errorf("error deleting remote branch: %v", err)
 		}
 	}
+
 	return nil
 }
 
@@ -151,8 +153,40 @@ func deleteRemoteBranch(branch string) error {
 	return nil
 }
 
-func hasRemoteBranch(branchName string) bool {
-	cmd := exec.Command("git", "ls-remote", "--heads", "origin", branchName)
-	err := cmd.Run()
-	return err == nil
+func GetBranches() []string {
+	cmd := exec.Command("git", "branch", "--format=%(refname:short)")
+	branches, err := cmd.Output()
+	if err != nil {
+		fmt.Println("Error getting branches", err)
+		os.Exit(1)
+	}
+
+	return strings.Fields(string(branches))
+}
+
+func GetDefaultBranch() string {
+	cmd := exec.Command("git", "symbolic-ref", "--short", "HEAD")
+	defaultBranch, err := cmd.Output()
+	if err != nil {
+		fmt.Println("Error getting default branch", err)
+		os.Exit(1)
+	}
+
+	return strings.TrimSpace(string(defaultBranch))
+}
+
+func GetBranchesWithDefaultIndication() []string {
+	branches := GetBranches()
+	defaultBranch := GetDefaultBranch()
+	branchesWithDefaultIndication := []string{}
+
+	for _, branch := range branches {
+		if branch == defaultBranch {
+			branchesWithDefaultIndication = append(branchesWithDefaultIndication, "* "+branch)
+		} else {
+			branchesWithDefaultIndication = append(branchesWithDefaultIndication, "  "+branch)
+		}
+	}
+
+	return branchesWithDefaultIndication
 }
