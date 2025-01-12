@@ -123,7 +123,7 @@ func MergeBranch(branch string) error {
 		return fmt.Errorf("error merging branch: %v", err)
 	}
 
-	println("Branch '%s' merged", branch)
+	println(fmt.Sprintf("Branch '%s' merged", branch))
 
 	shouldDeleteBranch := utils.AskConfirmation("Do you want to delete the merged branch?")
 	if shouldDeleteBranch {
