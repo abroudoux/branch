@@ -10,6 +10,28 @@ import (
 	utils "github.com/abroudoux/branch/internal/utils"
 )
 
+func DoAction(branch string, action string) error {
+	switch action {
+	case "Exit":
+		fmt.Println("Exiting...")
+		return nil
+	case "Delete":
+		return DeleteBranch(branch)
+	case "Merge":
+		return MergeBranch(branch)
+	case "Branch":
+		return CreateBranch(branch)
+	case "Rename":
+		return RenameBranch(branch)
+	case "Checkout":
+		return CheckoutBranch(branch)
+	case "Name":
+		return CopyName(branch)
+	default:
+		return fmt.Errorf("invalid action: %s", action)
+	}
+}
+
 func RenameBranch(branch string) error {
 	newBranchName, err := utils.AskInput("Enter a name for the new branch: ")
 	if err != nil {

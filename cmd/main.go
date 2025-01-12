@@ -2,7 +2,6 @@ package main
 
 import (
 	_ "embed"
-	"fmt"
 	"os"
 
 	git "github.com/abroudoux/branch/internal/git"
@@ -37,30 +36,8 @@ func main() {
 		utils.PrintErrorAndExit(err)
 	}
 
-	err = doAction(branch, action)
+	err = git.DoAction(branch, action)
 	if err != nil {
 		utils.PrintErrorAndExit(err)
-	}
-}
-
-func doAction(branch string, action string) error {
-	switch action {
-	case "Exit":
-		fmt.Println("Exiting...")
-		return nil
-	case "Delete":
-		return git.DeleteBranch(branch)
-	case "Merge":
-		return git.MergeBranch(branch)
-	case "Branch":
-		return git.CreateBranch(branch)
-	case "Rename":
-		return git.RenameBranch(branch)
-	case "Checkout":
-		return git.CheckoutBranch(branch)
-	case "Name":
-		return git.CopyName(branch)
-	default:
-		return fmt.Errorf("invalid action: %s", action)
 	}
 }
