@@ -10,6 +10,7 @@ import (
 	git "github.com/abroudoux/branch/internal/git"
 	repository "github.com/abroudoux/branch/internal/repository"
 	ui "github.com/abroudoux/branch/internal/ui"
+	"github.com/abroudoux/branch/internal/utils"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -17,31 +18,31 @@ func main() {
 	if len(os.Args) > 1 {
 		err := flagMode()
 		if err != nil {
-			printErrorAndExit(err)
+			utils.PrintErrorAndExit(err)
 		}
 		os.Exit(0)
 	}
 
 	err := isInGitRepository()
 	if err != nil {
-		printErrorAndExit(err)
+		utils.PrintErrorAndExit(err)
 	}
 
 	branches := git.GetBranchesWithDefaultIndication()
 
 	branch, err := chooseBranch(branches)
 	if err != nil {
-		printErrorAndExit(err)
+		utils.PrintErrorAndExit(err)
 	}
 
 	action, err := chooseAction(branch)
 	if err != nil {
-		printErrorAndExit(err)
+		utils.PrintErrorAndExit(err)
 	}
 
 	err = doAction(branch, action)
 	if err != nil {
-		printErrorAndExit(err)
+		utils.PrintErrorAndExit(err)
 	}
 }
 
@@ -284,9 +285,4 @@ func doAction(branch string, action string) error {
 	default:
 		return fmt.Errorf("invalid action: %s", action)
 	}
-}
-
-func printErrorAndExit(err error) {
-	fmt.Println(err)
-	os.Exit(1)
 }

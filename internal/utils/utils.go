@@ -34,3 +34,8 @@ func AskInput(message string) (string, error) {
 
 	return input, nil
 }
+
+func PrintErrorAndExit(err error) {
+	fmt.Println(err)
+	os.Exit(1)
+}
