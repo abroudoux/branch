@@ -2,7 +2,7 @@ version: 2
 
 builds:
   - main: ./cmd/main.go
-  - binary: branch
+    binary: branch
     goos:
       - darwin
       - linux
