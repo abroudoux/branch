@@ -39,3 +39,7 @@ func PrintErrorAndExit(err error) {
 	fmt.Println(err)
 	os.Exit(1)
 }
+
+func CleanString(s string) string {
+	return strings.TrimSpace(strings.TrimPrefix(s, "*"))
+}

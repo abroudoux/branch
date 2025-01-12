@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"strings"
 
 	git "github.com/abroudoux/branch/internal/git"
 	repository "github.com/abroudoux/branch/internal/repository"
@@ -77,10 +76,6 @@ func printBranches() {
 	for _, branch := range branches {
 		fmt.Println(branch)
 	}
-}
-
-func cleanString(s string) string {
-	return strings.TrimSpace(strings.TrimPrefix(s, "*"))
 }
 
 type BranchChoice struct {
@@ -226,7 +221,7 @@ func chooseBranch(branches []string) (string, error) {
 	}
 
 	branchMenu := finalModel.(BranchChoice)
-	return cleanString(branchMenu.selectedBranch), nil
+	return utils.CleanString(branchMenu.selectedBranch), nil
 }
 
 func chooseAction(selectedBranch string) (string, error) {
@@ -237,7 +232,7 @@ func chooseAction(selectedBranch string) (string, error) {
 	}
 
 	actionMenu := finalActionModel.(actionChoice)
-	return cleanString(actionMenu.selectedAction), nil
+	return utils.CleanString(actionMenu.selectedAction), nil
 }
 
 func flagMode() error {
