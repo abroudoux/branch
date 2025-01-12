@@ -15,3 +15,8 @@ tasks:
     desc: Clean the app
     cmds:
       - rm -rf dist
+
+  test:
+    desc: Execute tests
+    cmds:
+      - go test ./tests
