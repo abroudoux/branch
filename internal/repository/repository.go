@@ -3,6 +3,10 @@ package repository
 import (
 	"fmt"
 	"net/http"
+	"os"
+
+	menus "github.com/abroudoux/branch/internal/menus"
+	utils "github.com/abroudoux/branch/internal/utils"
 )
 
 func PrintHelpManual() {
@@ -21,4 +25,28 @@ func GetLatestRelease() (string, error) {
 
 	latestVersion := res.Header.Get("tag_name")
 	return latestVersion, nil
+}
+
+func FlagMode(branches []string) error {
+	flag := os.Args[1]
+
+	switch flag {
+	case "run", "-r":
+		menus.ChooseBranch(branches)
+	case "-v", "--version":
+		latestVersion, err := GetLatestRelease()
+		if err != nil {
+			return fmt.Errorf("error getting latest version: %v", err)
+		}
+
+		fmt.Printf("Latest version: %s\n", latestVersion)
+	case "-l", "--list":
+		utils.PrintBranches(branches)
+	case "-h", "--help":
+		PrintHelpManual()
+	default:
+		PrintHelpManual()
+	}
+
+	return nil
 }

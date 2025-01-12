@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -42,4 +43,35 @@ func PrintErrorAndExit(err error) {
 
 func CleanString(s string) string {
 	return strings.TrimSpace(strings.TrimPrefix(s, "*"))
+}
+
+func isGitInstalled() error {
+	cmd := exec.Command("git", "version")
+	err := cmd.Run()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func IsInGitRepository() error {
+	err := isGitInstalled()
+	if err != nil {
+		return err
+	}
+
+	cmd := exec.Command("git", "rev-parse", "--is-inside-work-tree")
+	err = cmd.Run()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func PrintBranches(branches []string) {
+	for _, branch := range branches {
+		fmt.Println(branch)
+	}
 }
