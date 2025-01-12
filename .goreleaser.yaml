@@ -1,6 +1,7 @@
 version: 2
 
 builds:
+  - main: ./cmd/main.go
   - binary: branch
     goos:
       - darwin
