@@ -16,23 +16,23 @@ func DoAction(branchSelected string, branches []string, action string) error {
 		fmt.Println("Exiting...")
 		return nil
 	case "Delete":
-		return DeleteBranch(branchSelected)
+		return deleteBranch(branchSelected)
 	case "Merge":
-		return MergeBranch(branchSelected)
+		return mergeBranch(branchSelected)
 	case "Branch":
-		return CreateBranch(branchSelected, branches)
+		return createBranch(branchSelected, branches)
 	case "Rename":
-		return RenameBranch(branchSelected)
+		return renameBranch(branchSelected)
 	case "Checkout":
-		return CheckoutBranch(branchSelected)
+		return checkoutBranch(branchSelected)
 	case "Name":
-		return CopyName(branchSelected)
+		return copyName(branchSelected)
 	default:
 		return fmt.Errorf("invalid action: %s", action)
 	}
 }
 
-func RenameBranch(branch string) error {
+func renameBranch(branch string) error {
 	newBranchName, err := utils.AskInput("Enter a name for the new branch: ")
 	if err != nil {
 		return fmt.Errorf("error reading input: %v", err)
@@ -52,7 +52,7 @@ func RenameBranch(branch string) error {
 	return nil
 }
 
-func CheckoutBranch(branch string) error {
+func checkoutBranch(branch string) error {
 	cmd := exec.Command("git", "checkout", branch)
 	err := cmd.Run()
 	if err != nil {
@@ -63,7 +63,7 @@ func CheckoutBranch(branch string) error {
 	return nil
 }
 
-func CopyName(branch string) error {
+func copyName(branch string) error {
 	cmd := exec.Command("pbcopy")
 	cmd.Stdin = strings.NewReader(branch)
 	err := cmd.Run()
@@ -75,7 +75,7 @@ func CopyName(branch string) error {
 	return nil
 }
 
-func CreateBranch(branchSelected string, branches []string) error {
+func createBranch(branchSelected string, branches []string) error {
 	newBranchName, err := utils.AskInput("Enter the name of the new branch: ")
 	if err != nil {
 		return fmt.Errorf("error reading input: %v", err)
@@ -108,7 +108,7 @@ func CreateBranch(branchSelected string, branches []string) error {
 	return nil
 }
 
-func MergeBranch(branch string) error {
+func mergeBranch(branch string) error {
 	cmd := exec.Command("git", "merge", branch)
 	err := cmd.Run()
 	if err != nil {
@@ -120,7 +120,7 @@ func MergeBranch(branch string) error {
 
 	shouldDeleteBranch := utils.AskConfirmation("Do you want to delete the merged branch?")
 	if shouldDeleteBranch {
-		err := DeleteBranch(branch)
+		err := deleteBranch(branch)
 		if err != nil {
 			return fmt.Errorf("error deleting branch: %v", err)
 		}
@@ -131,7 +131,7 @@ func MergeBranch(branch string) error {
 	return nil
 }
 
-func DeleteBranch(branch string) error {
+func deleteBranch(branch string) error {
 	if !utils.AskConfirmation(fmt.Sprintf("Are you sure you want to delete '%s'?", ui.RenderBranch(branch))) {
 		return fmt.Errorf("branch deletion cancelled")
 	}
