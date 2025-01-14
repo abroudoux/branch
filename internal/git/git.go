@@ -81,14 +81,14 @@ func CreateBranch(branchSelected string) error {
 		return fmt.Errorf("error reading input: %v", err)
 	}
 
-	branches := GetBranches()
+	branches := getBranches()
 	for _, branch := range branches {
 		if branch == newBranchName {
 			return fmt.Errorf("branch '%s' already exists", ui.RenderBranch(newBranchName))
 		}
 	}
 
-	defaultBranch := GetDefaultBranch()
+	defaultBranch := getDefaultBranch()
 	if branchSelected != defaultBranch {
 		cmd := exec.Command("git", "checkout", branchSelected)
 		err := cmd.Run()
@@ -175,7 +175,7 @@ func deleteRemoteBranch(branch string) error {
 	return nil
 }
 
-func GetBranches() []string {
+func getBranches() []string {
 	cmd := exec.Command("git", "branch", "--format=%(refname:short)")
 	branches, err := cmd.Output()
 	if err != nil {
@@ -186,7 +186,7 @@ func GetBranches() []string {
 	return strings.Fields(string(branches))
 }
 
-func GetDefaultBranch() string {
+func getDefaultBranch() string {
 	cmd := exec.Command("git", "symbolic-ref", "--short", "HEAD")
 	defaultBranch, err := cmd.Output()
 	if err != nil {
@@ -198,8 +198,8 @@ func GetDefaultBranch() string {
 }
 
 func GetBranchesWithDefaultIndication() []string {
-	branches := GetBranches()
-	defaultBranch := GetDefaultBranch()
+	branches := getBranches()
+	defaultBranch := getDefaultBranch()
 	branchesWithDefaultIndication := []string{}
 
 	for _, branch := range branches {

@@ -11,10 +11,8 @@ import (
 )
 
 func main() {
-	branches := git.GetBranchesWithDefaultIndication()
-
 	if len(os.Args) > 1 {
-		err := repository.FlagMode(branches)
+		err := repository.FlagMode()
 		if err != nil {
 			utils.PrintErrorAndExit(err)
 		}
@@ -25,6 +23,8 @@ func main() {
 	if err != nil {
 		utils.PrintErrorAndExit(err)
 	}
+
+	branches := git.GetBranchesWithDefaultIndication()
 
 	branch, err := menus.ChooseBranch(branches)
 	if err != nil {
