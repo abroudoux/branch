@@ -10,23 +10,23 @@ import (
 	utils "github.com/abroudoux/branch/internal/utils"
 )
 
-func DoAction(branch string, action string) error {
+func DoAction(branchSelected string, branches []string, action string) error {
 	switch action {
 	case "Exit":
 		fmt.Println("Exiting...")
 		return nil
 	case "Delete":
-		return DeleteBranch(branch)
+		return DeleteBranch(branchSelected)
 	case "Merge":
-		return MergeBranch(branch)
+		return MergeBranch(branchSelected)
 	case "Branch":
-		return CreateBranch(branch)
+		return CreateBranch(branchSelected, branches)
 	case "Rename":
-		return RenameBranch(branch)
+		return RenameBranch(branchSelected)
 	case "Checkout":
-		return CheckoutBranch(branch)
+		return CheckoutBranch(branchSelected)
 	case "Name":
-		return CopyName(branch)
+		return CopyName(branchSelected)
 	default:
 		return fmt.Errorf("invalid action: %s", action)
 	}
@@ -75,17 +75,10 @@ func CopyName(branch string) error {
 	return nil
 }
 
-func CreateBranch(branchSelected string) error {
+func CreateBranch(branchSelected string, branches []string) error {
 	newBranchName, err := utils.AskInput("Enter the name of the new branch: ")
 	if err != nil {
 		return fmt.Errorf("error reading input: %v", err)
-	}
-
-	branches := getBranches()
-	for _, branch := range branches {
-		if branch == newBranchName {
-			return fmt.Errorf("branch '%s' already exists", ui.RenderBranch(newBranchName))
-		}
 	}
 
 	defaultBranch := getDefaultBranch()

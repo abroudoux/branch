@@ -69,13 +69,13 @@ func (menu BranchChoice) View() string {
     return s
 }
 
-func ChooseBranch(branches []string) (string, error) {
+func ChooseBranch(branches []string) (string, []string, error) {
 	branchesMenu := tea.NewProgram(initialBranchModel(branches))
 	finalModel, err := branchesMenu.Run()
 	if err != nil {
-		return "", fmt.Errorf("error running the branches menu: %v", err)
+		return "", []string{}, nil
 	}
 
 	branchMenu := finalModel.(BranchChoice)
-	return utils.CleanString(branchMenu.selectedBranch), nil
+	return utils.CleanString(branchMenu.selectedBranch), branchMenu.branches, nil
 }

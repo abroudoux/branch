@@ -26,17 +26,17 @@ func main() {
 
 	branches := git.GetBranchesWithDefaultIndication()
 
-	branch, err := menus.ChooseBranch(branches)
+	branchSelected, branches, err := menus.ChooseBranch(branches)
 	if err != nil {
 		utils.PrintErrorAndExit(err)
 	}
 
-	action, err := menus.ChooseAction(branch)
+	action, err := menus.ChooseAction(branchSelected)
 	if err != nil {
 		utils.PrintErrorAndExit(err)
 	}
 
-	err = git.DoAction(branch, action)
+	err = git.DoAction(branchSelected, branches, action)
 	if err != nil {
 		utils.PrintErrorAndExit(err)
 	}

@@ -82,8 +82,8 @@ func (menu actionChoice) View() string {
 	return s
 }
 
-func ChooseAction(selectedBranch string) (string, error) {
-	actionsMenu := tea.NewProgram(initialActionModel(selectedBranch))
+func ChooseAction(branchSelected string) (string, error) {
+	actionsMenu := tea.NewProgram(initialActionModel(branchSelected))
 	finalActionModel, err := actionsMenu.Run()
 	if err != nil {
 		return "", fmt.Errorf("error running the actions menu: %v", err)
