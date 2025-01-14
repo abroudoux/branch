@@ -2,7 +2,6 @@ package git
 
 import (
 	"fmt"
-	"os"
 	"os/exec"
 	"strings"
 
@@ -10,7 +9,7 @@ import (
 	utils "github.com/abroudoux/branch/internal/utils"
 )
 
-func DoAction(branchSelected string, branches []string, action string) error {
+func DoAction(branchSelected string, action string) error {
 	switch action {
 	case "Exit":
 		fmt.Println("Exiting...")
@@ -20,7 +19,7 @@ func DoAction(branchSelected string, branches []string, action string) error {
 	case "Merge":
 		return mergeBranch(branchSelected)
 	case "Branch":
-		return createBranch(branchSelected, branches)
+		return createBranch(branchSelected)
 	case "Rename":
 		return renameBranch(branchSelected)
 	case "Checkout":
@@ -28,24 +27,25 @@ func DoAction(branchSelected string, branches []string, action string) error {
 	case "Name":
 		return copyName(branchSelected)
 	default:
-		return fmt.Errorf("invalid action: %s", action)
+		fmt.Println("Exiting...")
+		return nil
 	}
 }
 
 func renameBranch(branch string) error {
 	newBranchName, err := utils.AskInput("Enter a name for the new branch: ")
 	if err != nil {
-		return fmt.Errorf("error reading input: %v", err)
+		return err
 	}
 
 	if strings.Contains(newBranchName, " ") {
-		return fmt.Errorf("error: the branch name must not contain spaces")
+		return err
 	}
 
 	cmd := exec.Command("git", "branch", "-m", branch, newBranchName)
 	err = cmd.Run()
 	if err != nil {
-		return fmt.Errorf("error renaming branch: %v", err)
+		return err
 	}
 
 	fmt.Printf("Branch %s renamed to %s\n", ui.RenderBranch(branch), ui.RenderBranch(newBranchName))
@@ -56,7 +56,7 @@ func checkoutBranch(branch string) error {
 	cmd := exec.Command("git", "checkout", branch)
 	err := cmd.Run()
 	if err != nil {
-		return fmt.Errorf("error checking out branch: %v", err)
+		return err
 	}
 
 	fmt.Printf("Branch %s checked out\n", ui.RenderBranch(branch))
@@ -68,25 +68,29 @@ func copyName(branch string) error {
 	cmd.Stdin = strings.NewReader(branch)
 	err := cmd.Run()
 	if err != nil {
-		return fmt.Errorf("error copying branch name: %v", err)
+		return err
 	}
 
 	fmt.Printf("Branch name '%s' copied to clipboard\n", ui.RenderBranch(branch))
 	return nil
 }
 
-func createBranch(branchSelected string, branches []string) error {
+func createBranch(branchSelected string) error {
 	newBranchName, err := utils.AskInput("Enter the name of the new branch: ")
 	if err != nil {
-		return fmt.Errorf("error reading input: %v", err)
+		return err
 	}
 
-	defaultBranch := getDefaultBranch()
+	defaultBranch, err := getDefaultBranch()
+	if err != nil {
+		return err
+	}
+
 	if branchSelected != defaultBranch {
 		cmd := exec.Command("git", "checkout", branchSelected)
 		err := cmd.Run()
 		if err != nil {
-			return fmt.Errorf("error checking out default branch: %v", err)
+			return err
 		}
 	}
 
@@ -94,13 +98,13 @@ func createBranch(branchSelected string, branches []string) error {
 		cmd := exec.Command("git", "checkout", "-b", newBranchName)
 		err := cmd.Run()
 		if err != nil {
-			return fmt.Errorf("error creating branch: %v", err)
+			return err
 		}
 	} else {
 		cmd := exec.Command("git", "branch", newBranchName)
 		err := cmd.Run()
 		if err != nil {
-			return fmt.Errorf("error creating branch: %v", err)
+			return err
 		}
 	}
 
@@ -112,8 +116,7 @@ func mergeBranch(branch string) error {
 	cmd := exec.Command("git", "merge", branch)
 	err := cmd.Run()
 	if err != nil {
-		fmt.Println("Error merging branch", err)
-		return fmt.Errorf("error merging branch: %v", err)
+		return err
 	}
 
 	println(fmt.Sprintf("Branch '%s' merged", branch))
@@ -122,12 +125,11 @@ func mergeBranch(branch string) error {
 	if shouldDeleteBranch {
 		err := deleteBranch(branch)
 		if err != nil {
-			return fmt.Errorf("error deleting branch: %v", err)
+			return err
 		}
 	}
 
 	println("Branch '%s' deleted", ui.RenderBranch(branch))
-
 	return nil
 }
 
@@ -139,7 +141,7 @@ func deleteBranch(branch string) error {
 	cmd := exec.Command("git", "branch", "-D", branch)
 	err := cmd.Run()
 	if err != nil {
-		return fmt.Errorf("error deleting branch: %v", err)
+		return err
 	}
 
 	println(fmt.Sprintf("Branch '%s' deleted", ui.RenderBranch(branch)))
@@ -147,7 +149,7 @@ func deleteBranch(branch string) error {
 	if utils.AskConfirmation(fmt.Sprintf("Do you want to delete '%s' remotly?", ui.RenderBranch(branch))) {
 		err := deleteRemoteBranch(branch)
 		if err != nil {
-			return fmt.Errorf("error deleting remote branch: %v", err)
+			return err
 		}
 	}
 
@@ -162,37 +164,43 @@ func deleteRemoteBranch(branch string) error {
 	cmd := exec.Command("git", "push", "origin", "--delete", branch)
 	err := cmd.Run()
 	if err != nil {
-		return fmt.Errorf("error deleting remote branch: %v", err)
+		return err
 	}
 
 	return nil
 }
 
-func getBranches() []string {
+func getBranches() ([]string, error) {
 	cmd := exec.Command("git", "branch", "--format=%(refname:short)")
 	branches, err := cmd.Output()
 	if err != nil {
-		fmt.Println("Error getting branches", err)
-		os.Exit(1)
+		return []string{}, err
 	}
 
-	return strings.Fields(string(branches))
+	return strings.Fields(string(branches)), nil
 }
 
-func getDefaultBranch() string {
+func getDefaultBranch() (string, error) {
 	cmd := exec.Command("git", "symbolic-ref", "--short", "HEAD")
 	defaultBranch, err := cmd.Output()
 	if err != nil {
-		fmt.Println("Error getting default branch", err)
-		os.Exit(1)
+		return "", err
 	}
 
-	return strings.TrimSpace(string(defaultBranch))
+	return strings.TrimSpace(string(defaultBranch)), nil
 }
 
-func GetBranchesWithDefaultIndication() []string {
-	branches := getBranches()
-	defaultBranch := getDefaultBranch()
+func GetBranchesWithDefaultIndication() ([]string, error) {
+	branches, err := getBranches()
+	if err != nil {
+		return []string{}, err
+	}
+
+	defaultBranch, err := getDefaultBranch()
+	if err != nil {
+		return []string{}, nil
+	}
+
 	branchesWithDefaultIndication := []string{}
 
 	for _, branch := range branches {
@@ -203,5 +211,5 @@ func GetBranchesWithDefaultIndication() []string {
 		}
 	}
 
-	return branchesWithDefaultIndication
+	return branchesWithDefaultIndication, nil
 }

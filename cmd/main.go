@@ -24,9 +24,12 @@ func main() {
 		utils.PrintErrorAndExit(err)
 	}
 
-	branches := git.GetBranchesWithDefaultIndication()
+	branches, err := git.GetBranchesWithDefaultIndication()
+	if err != nil {
+		utils.PrintErrorAndExit(err)
+	}
 
-	branchSelected, branches, err := menus.ChooseBranch(branches)
+	branchSelected, err := menus.ChooseBranch(branches)
 	if err != nil {
 		utils.PrintErrorAndExit(err)
 	}
@@ -36,7 +39,7 @@ func main() {
 		utils.PrintErrorAndExit(err)
 	}
 
-	err = git.DoAction(branchSelected, branches, action)
+	err = git.DoAction(branchSelected, action)
 	if err != nil {
 		utils.PrintErrorAndExit(err)
 	}
