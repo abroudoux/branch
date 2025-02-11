@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func PrintAsciiArt() error {
+func PrintAscii() error {
 	ascii, err := os.ReadFile("./ressources/ascii.txt")
     if err != nil {
 		return err

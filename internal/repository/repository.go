@@ -29,7 +29,7 @@ func FlagMode() error {
 
 	switch flag {
 	case "-v", "--version":
-		err := ascii.PrintAsciiArt()
+		err := ascii.PrintAscii()
 		if err != nil {
 			return err
 		}
