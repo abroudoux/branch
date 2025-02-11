@@ -63,16 +63,11 @@ Create a branch with a [conventionnal name](https://tilburgsciencehub.com/buildi
 - fix: `bugfix/the-bug-fixed`
 - features: `feature/the-amazing-feature`
 - test: `test/the-famous-test`
-- hotfix `hotfix/oh-my-god-bro`
-- wip `wip/the-work-name-in-progress`
+- refactor `refactor/the-great-change`
 
 ## 📌 Roadmap
 
-- [x] Option to create new branch
-- [x] Improve UI
-- [x] Enable installation via Homebrew
-- [x] Rewrite script in `Go`
-- [x] Add theme configuration
+- [ ] Improve error handling
 
 ## 📑 License
 
