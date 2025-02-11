@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+
+	"github.com/abroudoux/branch/internal/ascii"
 )
 
 func PrintHelpManual() {
@@ -27,6 +29,11 @@ func FlagMode() error {
 
 	switch flag {
 	case "-v", "--version":
+		err := ascii.PrintAsciiArt()
+		if err != nil {
+			return err
+		}
+
 		latestVersion, err := GetLatestRelease()
 		if err != nil {
 			return err

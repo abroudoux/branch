@@ -1,17 +1,13 @@
 version: "3"
 
 tasks:
-  run:
-    desc: Run the app
-    cmds:
-      - GOGLAGS=-mod=mod task build && ./bin/branch
-
   build:
     desc: Build the app
     cmds:
-      - GOGLAGS=-mod=mod go build -o bin/branch cmd/main.go
+      - go build -o bin/branch cmd/main.go
 
-  test:
-    desc: Execute tests
+  run:
+    desc: Run the app
     cmds:
-      - go test ./tests
+      - task build
+      - ./bin/branch {{ .CLI_ARGS }}

@@ -1,7 +1,6 @@
 package main
 
 import (
-	_ "embed"
 	"os"
 
 	git "github.com/abroudoux/branch/internal/git"
