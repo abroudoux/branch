@@ -6,6 +6,7 @@ import (
 	"github.com/abroudoux/branch/internal/branches"
 	"github.com/abroudoux/branch/internal/forms"
 	"github.com/abroudoux/branch/internal/git"
+	"github.com/abroudoux/branch/internal/logs"
 	"github.com/abroudoux/branch/internal/ui"
 	"github.com/go-git/go-git/v5/plumbing"
 )
@@ -34,6 +35,7 @@ func rename(repo git.Repository, branch branches.BranchWithSymbol, head branches
 		return err
 	}
 
-	msg := fmt.Sprintf("Branch %s renamed on %s", ui.RenderElementSelected(head.Name().String()), ui.RenderElementSelected(newName)))
+	msg := fmt.Sprintf("Branch %s renamed on %s", ui.RenderElementSelected(head.Name().String()), ui.RenderElementSelected(newName))
+	logs.Info(msg)
 	return nil
 }
