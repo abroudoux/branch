@@ -12,3 +12,9 @@ type BranchWithSymbol struct {
 	IsHead bool
 	Branch Branch
 }
+
+type branchChoice struct {
+	branches       []BranchWithSymbol
+	cursor         int
+	branchSelected BranchWithSymbol
+}

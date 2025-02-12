@@ -8,18 +8,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type BranchAction int
-
-const (
-	BranchActionExit BranchAction = iota
-	BranchActionDelete
-	BranchActionMerge
-	BranchActionNewBranch
-	BranchActionRename
-	BranchActionCheckout
-	BranchActionCopyName
-)
-
 func (a BranchAction) String() string {
 	return [...]string{
 		"Exit",
@@ -44,17 +32,10 @@ func getAllBranchActions() []BranchAction {
 	}
 }
 
-type BranchActionChoice struct {
-	actions        []BranchAction
-	cursor         int
-	actionSelected BranchAction
-	branchSelected branches.BranchWithSymbol
-}
-
-func initialBranchActionChoiceModel(branch branches.BranchWithSymbol) BranchActionChoice {
+func initialBranchActionChoiceModel(branch branches.BranchWithSymbol) branchActionChoice {
 	allBranchesActions := getAllBranchActions()
 
-	return BranchActionChoice{
+	return branchActionChoice{
 		actions:        allBranchesActions,
 		cursor:         len(allBranchesActions) - 1,
 		actionSelected: BranchActionExit,
@@ -62,11 +43,11 @@ func initialBranchActionChoiceModel(branch branches.BranchWithSymbol) BranchActi
 	}
 }
 
-func (menu BranchActionChoice) Init() tea.Cmd {
+func (menu branchActionChoice) Init() tea.Cmd {
 	return nil
 }
 
-func (menu BranchActionChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (menu branchActionChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -91,7 +72,7 @@ func (menu BranchActionChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return menu, nil
 }
 
-func (menu BranchActionChoice) View() string {
+func (menu branchActionChoice) View() string {
 	s := "\033[H\033[2J\n"
 	s += fmt.Sprintf("Choose an action for the branch %s:\n\n", ui.RenderElementSelected(menu.branchSelected.Branch.Name().String()))
 
@@ -110,6 +91,6 @@ func SelectAction(branchSelected branches.BranchWithSymbol) (BranchAction, error
 		return BranchActionExit, err
 	}
 
-	actionSelected := m.(BranchActionChoice).actionSelected
+	actionSelected := m.(branchActionChoice).actionSelected
 	return actionSelected, nil
 }

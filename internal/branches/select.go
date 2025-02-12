@@ -7,25 +7,19 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type BranchChoice struct {
-	branches       []BranchWithSymbol
-	cursor         int
-	branchSelected BranchWithSymbol
-}
-
-func initialBranchChoiceModel(branches []BranchWithSymbol) BranchChoice {
-	return BranchChoice{
+func initialBranchChoiceModel(branches []BranchWithSymbol) branchChoice {
+	return branchChoice{
 		branches:       branches,
 		cursor:         len(branches) - 1,
 		branchSelected: BranchWithSymbol{},
 	}
 }
 
-func (menu BranchChoice) Init() tea.Cmd {
+func (menu branchChoice) Init() tea.Cmd {
 	return nil
 }
 
-func (menu BranchChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (menu branchChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -50,7 +44,7 @@ func (menu BranchChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return menu, nil
 }
 
-func (menu BranchChoice) View() string {
+func (menu branchChoice) View() string {
 	s := "\033[H\033[2J\n"
 	s += "Choose a branch:\n\n"
 
@@ -69,6 +63,6 @@ func SelectBranch(branches []BranchWithSymbol) (BranchWithSymbol, error) {
 		return BranchWithSymbol{}, err
 	}
 
-	branchSelected := m.(BranchChoice).branchSelected
+	branchSelected := m.(branchChoice).branchSelected
 	return branchSelected, nil
 }
