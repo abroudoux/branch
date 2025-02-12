@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	br "github.com/abroudoux/branch/internal/branches"
 	"github.com/abroudoux/branch/internal/git"
 	"github.com/abroudoux/branch/internal/logs"
@@ -40,9 +42,9 @@ func main() {
 		panic(err)
 	}
 
-	for _, b := range branches {
-		println(b.Name())
-	}
+	// for _, b := range branches {
+	// 	println(b.Name())
+	// }
 
 	head, err := br.GetHead(repo)
 	if err != nil {
@@ -50,5 +52,19 @@ func main() {
 		panic(err)
 	}
 
-	println(head.Name())
+	// println(head.Name())
+
+	branchesWithSymbols := br.AddSymbolsToBranches(branches, head)
+	branchSelected, err := br.SelectBranch(branchesWithSymbols)
+	if err != nil {
+		logs.Error("Error: ", err)
+		panic(err)
+	}
+
+	if branchSelected.Branch.Name() == "" {
+		logs.Info("Program exited...")
+		os.Exit(0)
+	}
+
+	println(branchSelected.Branch.Name())
 }
