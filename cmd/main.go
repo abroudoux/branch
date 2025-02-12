@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/abroudoux/branch/internal/actions"
 	br "github.com/abroudoux/branch/internal/branches"
 	"github.com/abroudoux/branch/internal/git"
 	"github.com/abroudoux/branch/internal/logs"
@@ -66,5 +67,13 @@ func main() {
 		os.Exit(0)
 	}
 
-	println(branchSelected.Branch.Name())
+	// println(branchSelected.Branch.Name())
+
+	actionSelected, err := actions.SelectAction(branchSelected)
+	if err != nil {
+		logs.Error("Error: ", err)
+		panic(err)
+	}
+
+	println(actionSelected.String())
 }

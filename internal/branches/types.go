@@ -9,5 +9,6 @@ type Branch = *plumbing.Reference
 type Repository = *git.Repository
 type BranchWithSymbol struct {
 	Name   string
+	IsHead bool
 	Branch Branch
 }
