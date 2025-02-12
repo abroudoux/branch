@@ -1,19 +1,26 @@
 package branches
 
-import "fmt"
+import (
+	"strings"
+)
 
 func AddSymbolsToBranches(branches []Branch, head Branch) []BranchWithSymbol {
 	branchesWithSymbols := []BranchWithSymbol{}
 	for _, branch := range branches {
-		if branch.Hash() == head.Hash() {
+		branchName := string(branch.Name())
+		branchNameTrimed := strings.TrimPrefix(string(branchName), "refs/heads/")
+
+		if branch.Name() == head.Name() {
+			name := "* " + branchNameTrimed
 			branchesWithSymbols = append(branchesWithSymbols, BranchWithSymbol{
-				Name:   fmt.Sprint("* ", branch.Name()),
+				Name:   name,
 				IsHead: true,
 				Branch: branch,
 			})
 		} else {
+			name := "  " + branchNameTrimed
 			branchesWithSymbols = append(branchesWithSymbols, BranchWithSymbol{
-				Name:   fmt.Sprint("  ", branch.Name()),
+				Name:   name,
 				IsHead: false,
 				Branch: branch,
 			})

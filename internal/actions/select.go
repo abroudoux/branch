@@ -74,7 +74,7 @@ func (menu branchActionChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (menu branchActionChoice) View() string {
 	s := "\033[H\033[2J\n"
-	s += fmt.Sprintf("Choose an action for the branch %s:\n\n", ui.RenderElementSelected(menu.branchSelected.Branch.Name().String()))
+	s += fmt.Sprintf("Choose an action for the branch %s:\n\n", ui.RenderElementSelected(string(menu.branchSelected.Branch.Name())))
 
 	for i, action := range menu.actions {
 		cursor := ui.RenderCursor(menu.cursor == i)

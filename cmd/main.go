@@ -46,5 +46,11 @@ func main() {
 		panic(err)
 	}
 
-	println(actionSelected.String())
+	// println(actionSelected.String())
+
+	err = actions.DoBranchAction(repo, branchSelected, actionSelected)
+	if err != nil {
+		logs.Error("Error: ", err)
+		panic(err)
+	}
 }
