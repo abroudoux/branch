@@ -1,45 +1,54 @@
 package main
 
 import (
-	"os"
-
-	git "github.com/abroudoux/branch/internal/git"
-	menus "github.com/abroudoux/branch/internal/menus"
-	"github.com/abroudoux/branch/internal/repository"
-	utils "github.com/abroudoux/branch/internal/utils"
+	br "github.com/abroudoux/branch/internal/branches"
+	"github.com/abroudoux/branch/internal/git"
+	"github.com/abroudoux/branch/internal/logs"
 )
 
 func main() {
-	if len(os.Args) > 1 {
-		err := repository.FlagMode()
-		if err != nil {
-			utils.PrintErrorAndExit(err)
-		}
-		os.Exit(0)
+	// branches, err := git.GetBranchesWithDefaultIndication()
+	// if err != nil {
+	// 	utils.PrintErrorAndExit(err)
+	// }
+
+	// branchSelected, err := menus.ChooseBranch(branches)
+	// if err != nil {
+	// 	utils.PrintErrorAndExit(err)
+	// }
+
+	// action, err := menus.ChooseAction(branchSelected)
+	// if err != nil {
+	// 	utils.PrintErrorAndExit(err)
+	// }
+
+	// err = git.DoAction(branchSelected, action)
+	// if err != nil {
+	// 	utils.PrintErrorAndExit(err)
+	// }
+	//
+
+	repo, err := git.GetRepositoryCurrentDir()
+	if err != nil {
+		logs.Error("Error: ", err)
+		panic(err)
 	}
 
-	err := utils.IsInGitRepository()
+	branches, err := br.GetBranches(repo)
 	if err != nil {
-		utils.PrintErrorAndExit(err)
+		logs.Error("Error: ", err)
+		panic(err)
 	}
 
-	branches, err := git.GetBranchesWithDefaultIndication()
-	if err != nil {
-		utils.PrintErrorAndExit(err)
+	for _, b := range branches {
+		println(b.Name())
 	}
 
-	branchSelected, err := menus.ChooseBranch(branches)
+	head, err := br.GetHead(repo)
 	if err != nil {
-		utils.PrintErrorAndExit(err)
+		logs.Error("Error: ", err)
+		panic(err)
 	}
 
-	action, err := menus.ChooseAction(branchSelected)
-	if err != nil {
-		utils.PrintErrorAndExit(err)
-	}
-
-	err = git.DoAction(branchSelected, action)
-	if err != nil {
-		utils.PrintErrorAndExit(err)
-	}
+	println(head.Name())
 }
