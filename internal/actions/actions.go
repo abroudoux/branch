@@ -5,7 +5,7 @@ import (
 	"github.com/abroudoux/branch/internal/git"
 )
 
-func DoBranchAction(repo git.Repository, branch branches.BranchWithSymbol, action BranchAction) error {
+func DoBranchAction(repo git.Repository, branch branches.BranchWithSymbol, head branches.Branch, action BranchAction) error {
 	switch action {
 	case BranchActionExit:
 		return nil
@@ -16,7 +16,7 @@ func DoBranchAction(repo git.Repository, branch branches.BranchWithSymbol, actio
 	case BranchActionMerge:
 		return nil
 	case BranchActionNewBranch:
-		return nil
+		return createNewBranch(repo, branch, head)
 	case BranchActionRename:
 		return nil
 	case BranchActionCheckout:

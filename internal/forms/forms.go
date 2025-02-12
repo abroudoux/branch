@@ -22,3 +22,16 @@ func AskConfirmation(message string) (bool, error) {
 
 	return false, nil
 }
+
+func AskInput(message string) (string, error) {
+	var input string
+
+	fmt.Print(message)
+
+	_, err := fmt.Scanln(&input)
+	if err != nil {
+		return "", err
+	}
+
+	return input, nil
+}
