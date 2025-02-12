@@ -11,16 +11,14 @@ func AddSymbolsToBranches(branches []Branch, head Branch) []BranchWithSymbol {
 		branchNameTrimed := strings.TrimPrefix(string(branchName), "refs/heads/")
 
 		if branch.Name() == head.Name() {
-			name := "* " + branchNameTrimed
 			branchesWithSymbols = append(branchesWithSymbols, BranchWithSymbol{
-				Name:   name,
+				Name:   branchNameTrimed,
 				IsHead: true,
 				Branch: branch,
 			})
 		} else {
-			name := "  " + branchNameTrimed
 			branchesWithSymbols = append(branchesWithSymbols, BranchWithSymbol{
-				Name:   name,
+				Name:   branchNameTrimed,
 				IsHead: false,
 				Branch: branch,
 			})

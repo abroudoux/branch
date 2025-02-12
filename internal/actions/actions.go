@@ -10,7 +10,9 @@ func DoBranchAction(repo git.Repository, branch branches.BranchWithSymbol, actio
 	case BranchActionExit:
 		return nil
 	case BranchActionDelete:
-		return delete(repo, branch)
+		// TODO
+		return nil
+		// return delete(repo, branch)
 	case BranchActionMerge:
 		return nil
 	case BranchActionNewBranch:
@@ -20,7 +22,7 @@ func DoBranchAction(repo git.Repository, branch branches.BranchWithSymbol, actio
 	case BranchActionCheckout:
 		return nil
 	case BranchActionCopyName:
-		return nil
+		return copyBranchName(branch)
 	}
 
 	return nil

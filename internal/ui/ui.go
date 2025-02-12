@@ -19,6 +19,17 @@ func RenderCurrentLine(s string, isCurrentLine bool) string {
 	return s
 }
 
+func RenderCurrentBranch(s string, isCurrentLine bool, isHead bool) string {
+	if isCurrentLine {
+		if isHead {
+			return fmt.Sprintf("\033[%sm%s\033[0m", "32", s)
+		} else {
+			return fmt.Sprintf("\033[%sm%s\033[0m", "32", s)
+		}
+	}
+	return s
+}
+
 func RenderElementSelected(el string) string {
 	return fmt.Sprintf("\033[%sm%s\033[0m", "38;2;214;112;214", el)
 }
