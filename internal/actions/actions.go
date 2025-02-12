@@ -18,7 +18,7 @@ func DoBranchAction(repo git.Repository, branch branches.BranchWithSymbol, head 
 	case BranchActionNewBranch:
 		return createNewBranch(repo, branch, head)
 	case BranchActionRename:
-		return nil
+		return rename(repo, branch, head)
 	case BranchActionCheckout:
 		return checkout(repo, branch.Branch.Name().String())
 	case BranchActionCopyName:
