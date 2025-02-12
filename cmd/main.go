@@ -5,7 +5,7 @@ import (
 
 	git "github.com/abroudoux/branch/internal/git"
 	menus "github.com/abroudoux/branch/internal/menus"
-	repository "github.com/abroudoux/branch/internal/repository"
+	"github.com/abroudoux/branch/internal/repository"
 	utils "github.com/abroudoux/branch/internal/utils"
 )
 

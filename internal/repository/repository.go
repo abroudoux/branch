@@ -9,8 +9,20 @@ import (
 )
 
 func PrintHelpManual() {
+	commands := []string{
+		"branch",
+		"branch [--help, -h]",
+	}
+	descriptions := []string{
+		"Run the program",
+		"Show this help message",
+	}
+
 	fmt.Println("Usage: branch [options]")
-	fmt.Printf("  %-20s %s\n", "branch [--help | -h]", "Show this help message")
+	for i, cmd := range commands {
+		fmt.Printf("  %-20s %s\n", cmd, descriptions[i])
+	}
+
 }
 
 func GetLatestRelease() (string, error) {
@@ -25,9 +37,9 @@ func GetLatestRelease() (string, error) {
 }
 
 func FlagMode() error {
-	flag := os.Args[1]
+	otpion := os.Args[1]
 
-	switch flag {
+	switch otpion {
 	case "-v", "--version":
 		err := ascii.PrintAscii()
 		if err != nil {
