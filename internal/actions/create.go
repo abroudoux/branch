@@ -18,7 +18,10 @@ func createNewBranch(repo git.Repository, branch branches.BranchWithSymbol, head
 	}
 
 	if !branch.IsHead {
-		return fmt.Errorf("cannot create a new branch from a non-HEAD branch")
+		err := checkout(repo, branch.Branch.Name().String())
+		if err != nil {
+			return nil
+		}
 	}
 
 	ref := plumbing.NewHashReference(plumbing.ReferenceName("refs/heads/"+newBranchName), head.Hash())
@@ -27,7 +30,7 @@ func createNewBranch(repo git.Repository, branch branches.BranchWithSymbol, head
 		return err
 	}
 
-	msgSuccessfullyCreated := fmt.Sprintf("New branch %s based on %s created.", newBranchName, branch.Name)
+	msgSuccessfullyCreated := fmt.Sprintf("New branch %s based on %s created.", ui.RenderElementSelected(newBranchName), ui.RenderElementSelected(branch.Name))
 	logs.Info(msgSuccessfullyCreated)
 
 	msgConfirmation := fmt.Sprintf("Do you want to checkout on the new branch %s created?", ui.RenderElementSelected(newBranchName))
@@ -36,21 +39,11 @@ func createNewBranch(repo git.Repository, branch branches.BranchWithSymbol, head
 		return err
 	}
 
-	println(checkoutOnBranchCreated)
-
 	if checkoutOnBranchCreated {
-		// w, err := repo.Worktree()
-		// if err != nil {
-		// 	return err
-		// }
-		// err = w.Checkout(&git.CheckoutOptions{
-		// 	Branch: plumbing.ReferenceName("refs/heads/" + newBranchName),
-		// })
-		// if err != nil {
-		// 	return err
-		// }
-		// logs.Info(fmt.Sprintf("Checked out to new branch %s", newBranchName))
-		return nil
+		err := checkout(repo, newBranchName)
+		if err != nil {
+			return nil
+		}
 	}
 
 	return nil

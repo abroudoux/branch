@@ -1,10 +1,29 @@
 package actions
 
 import (
-	"github.com/abroudoux/branch/internal/branches"
+	"fmt"
+
 	"github.com/abroudoux/branch/internal/git"
+	"github.com/abroudoux/branch/internal/logs"
+	"github.com/abroudoux/branch/internal/ui"
+	"github.com/go-git/go-git/v5/plumbing"
 )
 
-func checkout(repo git.Repository, branchSelected branches.BranchWithSymbol) error {
+func checkout(repo git.Repository, branchName string) error {
+	worktree, err := repo.Worktree()
+	if err != nil {
+		return err
+	}
+
+	options := &git.CheckoutOptions{
+		Branch: plumbing.ReferenceName(branchName),
+	}
+	err = worktree.Checkout(options)
+	if err != nil {
+		return err
+	}
+
+	msg := fmt.Sprintf("Successfully checked out branch %s.", ui.RenderElementSelected(branchName))
+	logs.Info(msg)
 	return nil
 }
