@@ -24,8 +24,8 @@ func createNewBranch(repo git.Repository, branch branches.BranchWithSymbol, head
 		}
 	}
 
-	ref := plumbing.NewHashReference(plumbing.ReferenceName("refs/heads/"+newBranchName), head.Hash())
-	err = repo.Storer.SetReference(ref)
+	newRef := plumbing.NewHashReference(plumbing.ReferenceName("refs/heads/"+newBranchName), head.Hash())
+	err = repo.Storer.SetReference(newRef)
 	if err != nil {
 		return err
 	}
@@ -40,7 +40,7 @@ func createNewBranch(repo git.Repository, branch branches.BranchWithSymbol, head
 	}
 
 	if checkoutOnBranchCreated {
-		err := checkout(repo, newBranchName)
+		err := checkout(repo, "refs/heads/"+newBranchName)
 		if err != nil {
 			return nil
 		}

@@ -21,6 +21,8 @@ func AskConfirmation(message string) (bool, error) {
 	}
 
 	return false, nil
+
+	return true, nil
 }
 
 func AskInput(message string) (string, error) {
