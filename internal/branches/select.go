@@ -59,6 +59,8 @@ func (menu branchChoice) View() string {
 		}
 	}
 
+	s += "\n"
+
 	return s
 }
 

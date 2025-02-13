@@ -3,11 +3,13 @@ package actions
 import (
 	"github.com/abroudoux/branch/internal/branches"
 	"github.com/abroudoux/branch/internal/git"
+	"github.com/abroudoux/branch/internal/logs"
 )
 
 func DoBranchAction(repo git.Repository, branchSelected branches.BranchWithSymbol, allBranches []branches.BranchWithSymbol, head branches.Branch, action BranchAction) error {
 	switch action {
 	case BranchActionExit:
+		logs.Info("Exiting..")
 		return nil
 	case BranchActionDelete:
 		// TODO

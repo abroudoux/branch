@@ -81,6 +81,8 @@ func (menu branchActionChoice) View() string {
 		s += fmt.Sprintf("%s %s\n", cursor, ui.RenderCurrentLine(action.String(), menu.cursor == i))
 	}
 
+	s += "\n"
+
 	return s
 }
 
