@@ -47,7 +47,7 @@ func delete(repo git.Repository, branch branches.BranchDetails) error {
 	}
 
 	if confirmRemoteDeletion {
-		err = repo.DeleteBranch("refs/remotes/origin/" + branch.Name)
+		err = repo.DeleteBranch("refs/remotes/origin/testbranch")
 		if err != nil {
 			return fmt.Errorf("failed to delete remote branch: %w", err)
 		}
