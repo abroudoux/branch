@@ -9,7 +9,7 @@ import (
 	"github.com/abroudoux/branch/internal/ui"
 )
 
-func merge(repo git.Repository, branch branches.BranchWithSymbol) error {
+func merge(repo git.Repository, branch branches.BranchDetails) error {
 	branchRef, err := repo.Reference(branch.Branch.Name(), true)
 	if err != nil {
 		return err

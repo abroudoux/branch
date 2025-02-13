@@ -7,14 +7,14 @@ import (
 
 type Branch = *plumbing.Reference
 type Repository = *git.Repository
-type BranchWithSymbol struct {
+type BranchDetails struct {
 	Name   string
 	IsHead bool
 	Branch Branch
 }
 
 type branchChoice struct {
-	branches       []BranchWithSymbol
+	branches       []BranchDetails
 	cursor         int
-	branchSelected BranchWithSymbol
+	branchSelected BranchDetails
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/abroudoux/branch/internal/logs"
 )
 
-func DoBranchAction(repo git.Repository, branchSelected branches.BranchWithSymbol, allBranches []branches.BranchWithSymbol, head branches.Branch, action BranchAction) error {
+func DoBranchAction(repo git.Repository, branchSelected branches.BranchDetails, allBranches []branches.BranchDetails, head branches.Branch, action BranchAction) error {
 	switch action {
 	case BranchActionExit:
 		logs.Info("Exiting..")

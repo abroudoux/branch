@@ -10,7 +10,7 @@ import (
 	"github.com/abroudoux/branch/internal/ui"
 )
 
-func delete(repo git.Repository, branch branches.BranchWithSymbol) error {
+func delete(repo git.Repository, branch branches.BranchDetails) error {
 	if branch.IsHead {
 		return fmt.Errorf("You can't delete the current HEAD.")
 	}

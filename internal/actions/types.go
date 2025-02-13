@@ -18,5 +18,5 @@ type branchActionChoice struct {
 	actions        []BranchAction
 	cursor         int
 	actionSelected BranchAction
-	branchSelected branches.BranchWithSymbol
+	branchSelected branches.BranchDetails
 }

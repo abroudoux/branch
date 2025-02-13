@@ -9,7 +9,7 @@ import (
 	"github.com/atotto/clipboard"
 )
 
-func copyBranchName(branch branches.BranchWithSymbol) error {
+func copyBranchName(branch branches.BranchDetails) error {
 	if clipboard.Unsupported {
 		return fmt.Errorf("Clipboard not supported on this plateform.")
 	}

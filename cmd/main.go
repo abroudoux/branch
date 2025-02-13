@@ -28,8 +28,8 @@ func main() {
 		panic(err)
 	}
 
-	branchesWithSymbols := br.AddSymbolsToBranches(branches, head)
-	branchSelected, err := br.SelectBranch(branchesWithSymbols)
+	branchesWithDetails := br.CreateBranchesWithDetails(branches, head)
+	branchSelected, err := br.SelectBranch(branchesWithDetails)
 	if err != nil {
 		logs.Error("Error: ", err)
 		panic(err)
@@ -46,9 +46,7 @@ func main() {
 		panic(err)
 	}
 
-	// println(actionSelected.String())
-
-	err = actions.DoBranchAction(repo, branchSelected, branchesWithSymbols, head, actionSelected)
+	err = actions.DoBranchAction(repo, branchSelected, branchesWithDetails, head, actionSelected)
 	if err != nil {
 		logs.Error("Error: ", err)
 		panic(err)

@@ -32,7 +32,7 @@ func getAllBranchActions() []BranchAction {
 	}
 }
 
-func initialBranchActionChoiceModel(branch branches.BranchWithSymbol) branchActionChoice {
+func initialBranchActionChoiceModel(branch branches.BranchDetails) branchActionChoice {
 	allBranchesActions := getAllBranchActions()
 
 	return branchActionChoice{
@@ -86,7 +86,7 @@ func (menu branchActionChoice) View() string {
 	return s
 }
 
-func SelectAction(branchSelected branches.BranchWithSymbol) (BranchAction, error) {
+func SelectAction(branchSelected branches.BranchDetails) (BranchAction, error) {
 	p := tea.NewProgram(initialBranchActionChoiceModel(branchSelected))
 	m, err := p.Run()
 	if err != nil {

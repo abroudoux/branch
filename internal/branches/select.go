@@ -7,11 +7,11 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-func initialBranchChoiceModel(branches []BranchWithSymbol) branchChoice {
+func initialBranchChoiceModel(branches []BranchDetails) branchChoice {
 	return branchChoice{
 		branches:       branches,
 		cursor:         len(branches) - 1,
-		branchSelected: BranchWithSymbol{},
+		branchSelected: BranchDetails{},
 	}
 }
 
@@ -64,11 +64,11 @@ func (menu branchChoice) View() string {
 	return s
 }
 
-func SelectBranch(branches []BranchWithSymbol) (BranchWithSymbol, error) {
+func SelectBranch(branches []BranchDetails) (BranchDetails, error) {
 	p := tea.NewProgram(initialBranchChoiceModel(branches))
 	m, err := p.Run()
 	if err != nil {
-		return BranchWithSymbol{}, err
+		return BranchDetails{}, err
 	}
 
 	branchSelected := m.(branchChoice).branchSelected

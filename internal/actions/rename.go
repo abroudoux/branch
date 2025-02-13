@@ -11,7 +11,7 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 )
 
-func rename(repo git.Repository, branch branches.BranchWithSymbol, head branches.Branch) error {
+func rename(repo git.Repository, branch branches.BranchDetails, head branches.Branch) error {
 	newName, err := forms.AskInput("Enter the new name of the branch: ")
 	if err != nil {
 		return err
