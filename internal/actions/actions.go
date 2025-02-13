@@ -20,7 +20,7 @@ func DoBranchAction(repo git.Repository, branchSelected branches.BranchWithSymbo
 	case BranchActionRename:
 		return rename(repo, branchSelected, head)
 	case BranchActionCheckout:
-		return checkout(repo, branchSelected.Branch.Name().String())
+		return checkout(repo, branchSelected.Branch.Name().String(), head)
 	case BranchActionCopyName:
 		return copyBranchName(branchSelected)
 	}

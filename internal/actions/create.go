@@ -46,7 +46,7 @@ func createNewBranch(repo git.Repository, branch branches.BranchWithSymbol, bran
 		}
 
 		if checkoutOnBranchCreated {
-			err := checkout(repo, "refs/heads/"+newBranchName)
+			err := checkout(repo, "refs/heads/"+newBranchName, head)
 			if err != nil {
 				return fmt.Errorf("failed to checkout new branch: %w", err)
 			}

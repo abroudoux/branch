@@ -18,7 +18,7 @@ func rename(repo git.Repository, branch branches.BranchWithSymbol, head branches
 	}
 
 	if !branch.IsHead {
-		err := checkout(repo, branch.Branch.Name().String())
+		err := checkout(repo, branch.Branch.Name().String(), head)
 		if err != nil {
 			return nil
 		}
