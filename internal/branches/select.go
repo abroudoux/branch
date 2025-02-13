@@ -51,9 +51,11 @@ func (menu branchChoice) View() string {
 	for i, branch := range menu.branches {
 		cursor := ui.RenderCursor(menu.cursor == i)
 		if branch.IsHead {
-			s += fmt.Sprintf("%s * %s\n", cursor, ui.RenderCurrentLine(branch.Name, menu.cursor == i))
+			branchName := "* " + branch.Name
+			s += fmt.Sprintf("%s %s\n", cursor, ui.RenderCurrentLine(branchName, menu.cursor == i))
 		} else {
-			s += fmt.Sprintf("%s   %s\n", cursor, ui.RenderCurrentLine(branch.Name, menu.cursor == i))
+			branchName := "  " + branch.Name
+			s += fmt.Sprintf("%s %s\n", cursor, ui.RenderCurrentLine(branchName, menu.cursor == i))
 		}
 	}
 
