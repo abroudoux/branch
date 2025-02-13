@@ -27,12 +27,34 @@ func delete(repo git.Repository, branch branches.BranchDetails) error {
 		return nil
 	}
 
-	refName := plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", branch.Name))
+	refName := plumbing.ReferenceName(branch.Branch.Name().String())
 	err = repo.Storer.RemoveReference(refName)
 	if err != nil {
 		return fmt.Errorf("failed to delete branch: %w", err)
 	}
 
 	logs.Info(fmt.Sprintf("Branch %s successfully deleted.", ui.RenderElementSelected(branch.Name)))
+
+	remoteBranchName := fmt.Sprintf("refs/remotes/origin/%s", branch.Name)
+	_, err = repo.Reference(plumbing.ReferenceName(remoteBranchName), true)
+	if err != nil {
+		return nil
+	}
+
+	confirmRemoteDeletion, err := forms.AskConfirmation(fmt.Sprintf("Remote branch %s exists. Do you want to delete it?", ui.RenderElementSelected(branch.Name)))
+	if err != nil {
+		return err
+	}
+
+	if confirmRemoteDeletion {
+		err = repo.DeleteBranch(branch.Name)
+		if err != nil {
+			return fmt.Errorf("failed to delete remote branch: %w", err)
+		}
+		logs.Info(fmt.Sprintf("Remote branch %s successfully deleted.", ui.RenderElementSelected(branch.Name)))
+		return nil
+	}
+
+	logs.Info("Remote branch deletion cancelled.")
 	return nil
 }
