@@ -12,47 +12,49 @@ import (
 )
 
 func createNewBranch(repo git.Repository, branch branches.BranchWithSymbol, branches []branches.BranchWithSymbol, head branches.Branch) error {
-	newBranchName, err := forms.AskInput("Enter the name of the new branch: ")
-	if err != nil {
-		return err
-	}
-
-	if isBranchNameAlreadyUsed(newBranchName, branches) {
-		warnMsg := fmt.Sprintf("%s is already used, please choose another name.", ui.RenderElementSelected(newBranchName))
-		logs.WarnMsg(warnMsg)
-		createNewBranch(repo, branch, branches, head)
-	}
-
 	if !branch.IsHead {
-		err := checkout(repo, branch.Branch.Name().String())
+		logs.WarnMsg("You need to create a branch from the head, move on it first.")
+		return nil
+	}
+
+	for {
+
+		newBranchName, err := forms.AskInput("Enter the name of the new branch: ")
 		if err != nil {
-			return nil
+			return fmt.Errorf("failed to get input: %w", err)
 		}
-	}
 
-	newRef := plumbing.NewHashReference(plumbing.ReferenceName("refs/heads/"+newBranchName), head.Hash())
-	err = repo.Storer.SetReference(newRef)
-	if err != nil {
-		return err
-	}
+		if isBranchNameAlreadyUsed(newBranchName, branches) {
+			warnMsg := fmt.Sprintf("%s is already used, please choose another name.", ui.RenderElementSelected(newBranchName))
+			logs.WarnMsg(warnMsg)
+			continue
+		}
 
-	msgSuccessfullyCreated := fmt.Sprintf("New branch %s based on %s created.", ui.RenderElementSelected(newBranchName), ui.RenderElementSelected(branch.Name))
-	logs.Info(msgSuccessfullyCreated)
-
-	msgConfirmation := fmt.Sprintf("Do you want to checkout on the new branch %s created?", ui.RenderElementSelected(newBranchName))
-	checkoutOnBranchCreated, err := forms.AskConfirmation(msgConfirmation)
-	if err != nil {
-		return err
-	}
-
-	if checkoutOnBranchCreated {
-		err := checkout(repo, "refs/heads/"+newBranchName)
+		newRef := plumbing.NewHashReference(plumbing.ReferenceName("refs/heads/"+newBranchName), head.Hash())
+		err = repo.Storer.SetReference(newRef)
 		if err != nil {
-			return nil
+			return fmt.Errorf("failed to create new branch: %w", err)
 		}
-	}
 
-	return nil
+		msgSuccessfullyCreated := fmt.Sprintf("New branch %s based on %s created.", ui.RenderElementSelected(newBranchName), ui.RenderElementSelected(branch.Name))
+		logs.Info(msgSuccessfullyCreated)
+
+		msgConfirmation := fmt.Sprintf("Do you want to checkout on the new branch %s created?", ui.RenderElementSelected(newBranchName))
+		checkoutOnBranchCreated, err := forms.AskConfirmation(msgConfirmation)
+		if err != nil {
+			return fmt.Errorf("failed to get confirmation: %w", err)
+		}
+
+		if checkoutOnBranchCreated {
+			err := checkout(repo, "refs/heads/"+newBranchName)
+			if err != nil {
+				return fmt.Errorf("failed to checkout new branch: %w", err)
+			}
+			logs.Info(fmt.Sprintf("Switched to new branch %s", ui.RenderElementSelected(newBranchName)))
+		}
+
+		return nil
+	}
 }
 
 func isBranchNameAlreadyUsed(newBranchName string, branches []branches.BranchWithSymbol) bool {
