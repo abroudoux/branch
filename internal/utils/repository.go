@@ -2,14 +2,18 @@ package utils
 
 import (
 	"fmt"
-	"os"
 )
 
 func getLatestVersion() string {
 	return "v0.1.2"
 }
 
-func printHelpManual() {
+func Version() {
+	printAscii()
+	fmt.Printf("Latest version: %s\n", getLatestVersion())
+}
+
+func HelpManual() {
 	commands := []string{
 		"branch",
 		"branch [--help, -h]",
@@ -23,20 +27,4 @@ func printHelpManual() {
 	for i, cmd := range commands {
 		fmt.Printf("  %-20s %s\n", cmd, descriptions[i])
 	}
-}
-
-func FlagMode() error {
-	option := os.Args[1]
-
-	switch option {
-	case "-v", "--version":
-		printAscii()
-		fmt.Printf("Latest version: %s\n", getLatestVersion())
-	case "-h", "--help":
-		printHelpManual()
-	default:
-		printHelpManual()
-	}
-
-	return nil
 }

@@ -7,32 +7,45 @@ import (
 	br "github.com/abroudoux/branch/internal/branches"
 	"github.com/abroudoux/branch/internal/git"
 	"github.com/abroudoux/branch/internal/logs"
+	"github.com/abroudoux/branch/internal/utils"
 )
 
 func main() {
+	if len(os.Args) > 1 {
+		option := os.Args[1]
+
+		switch option {
+		case "--help", "-h", "help":
+			utils.HelpManual()
+		case "--version", "-v", "version":
+			utils.Version()
+		default:
+			logs.WarnMsg("Unknown option.")
+			utils.HelpManual()
+		}
+
+		os.Exit(0)
+	}
+
 	repo, err := git.GetRepositoryCurrentDir()
 	if err != nil {
-		logs.Error("Error: ", err)
-		panic(err)
+		utils.PrintErrorExitProgram(err)
 	}
 
 	branches, err := br.GetBranches(repo)
 	if err != nil {
-		logs.Error("Error: ", err)
-		panic(err)
+		utils.PrintErrorExitProgram(err)
 	}
 
 	head, err := br.GetHead(repo)
 	if err != nil {
-		logs.Error("Error: ", err)
-		panic(err)
+		utils.PrintErrorExitProgram(err)
 	}
 
 	branchesWithDetails := br.CreateBranchesWithDetails(branches, head)
 	branchSelected, err := br.SelectBranch(branchesWithDetails)
 	if err != nil {
-		logs.Error("Error: ", err)
-		os.Exit(1)
+		utils.PrintErrorExitProgram(err)
 	}
 
 	if branchSelected.Name == "" {
@@ -42,13 +55,11 @@ func main() {
 
 	actionSelected, err := actions.SelectAction(branchSelected)
 	if err != nil {
-		logs.Error("Error: ", err)
-		panic(err)
+		utils.PrintErrorExitProgram(err)
 	}
 
 	err = actions.DoBranchAction(repo, branchSelected, branchesWithDetails, head, actionSelected)
 	if err != nil {
-		logs.Error("Error: ", err)
-		panic(err)
+		utils.PrintErrorExitProgram(err)
 	}
 }
