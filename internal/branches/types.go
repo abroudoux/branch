@@ -9,7 +9,7 @@ type Branch = *plumbing.Reference
 type Repository = *git.Repository
 type BranchDetails struct {
 	Name   string
-	IsHead bool
+	Head   bool
 	Branch Branch
 }
 

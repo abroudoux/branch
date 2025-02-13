@@ -12,7 +12,7 @@ import (
 )
 
 func createNewBranch(repo git.Repository, branch branches.BranchDetails, branches []branches.BranchDetails, head branches.Branch) error {
-	if !branch.IsHead {
+	if !branch.Head {
 		logs.WarnMsg("You need to create a branch from the head, move on it first.")
 		return nil
 	}

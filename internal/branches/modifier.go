@@ -5,25 +5,29 @@ import (
 )
 
 func CreateBranchesWithDetails(branches []Branch, head Branch) []BranchDetails {
-	branchesWithSymbols := []BranchDetails{}
+	var branchesDetails []BranchDetails
+	var headBranch BranchDetails
+
 	for _, branch := range branches {
 		branchName := string(branch.Name())
-		branchNameTrimed := strings.TrimPrefix(string(branchName), "refs/heads/")
+		branchNameTrimmed := strings.TrimPrefix(branchName, "refs/heads/")
 
-		if branch.Name() == head.Name() {
-			branchesWithSymbols = append(branchesWithSymbols, BranchDetails{
-				Name:   branchNameTrimed,
-				IsHead: true,
-				Branch: branch,
-			})
+		branchDetail := BranchDetails{
+			Name:   branchNameTrimmed,
+			Head:   branch.Name() == head.Name(),
+			Branch: branch,
+		}
+
+		if branchDetail.Head {
+			headBranch = branchDetail
 		} else {
-			branchesWithSymbols = append(branchesWithSymbols, BranchDetails{
-				Name:   branchNameTrimed,
-				IsHead: false,
-				Branch: branch,
-			})
+			branchesDetails = append(branchesDetails, branchDetail)
 		}
 	}
 
-	return branchesWithSymbols
+	if (headBranch != BranchDetails{}) {
+		branchesDetails = append(branchesDetails, headBranch)
+	}
+
+	return branchesDetails
 }

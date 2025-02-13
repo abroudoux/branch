@@ -11,7 +11,7 @@ import (
 )
 
 func delete(repo git.Repository, branch branches.BranchDetails) error {
-	if branch.IsHead {
+	if branch.Head {
 		return fmt.Errorf("You can't delete the current HEAD.")
 	}
 
