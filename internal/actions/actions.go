@@ -5,7 +5,7 @@ import (
 	"github.com/abroudoux/branch/internal/git"
 )
 
-func DoBranchAction(repo git.Repository, branch branches.BranchWithSymbol, head branches.Branch, action BranchAction) error {
+func DoBranchAction(repo git.Repository, branchSelected branches.BranchWithSymbol, allBranches []branches.BranchWithSymbol, head branches.Branch, action BranchAction) error {
 	switch action {
 	case BranchActionExit:
 		return nil
@@ -16,13 +16,13 @@ func DoBranchAction(repo git.Repository, branch branches.BranchWithSymbol, head 
 	case BranchActionMerge:
 		return nil
 	case BranchActionNewBranch:
-		return createNewBranch(repo, branch, head)
+		return createNewBranch(repo, branchSelected, allBranches, head)
 	case BranchActionRename:
-		return rename(repo, branch, head)
+		return rename(repo, branchSelected, head)
 	case BranchActionCheckout:
-		return checkout(repo, branch.Branch.Name().String())
+		return checkout(repo, branchSelected.Branch.Name().String())
 	case BranchActionCopyName:
-		return copyBranchName(branch)
+		return copyBranchName(branchSelected)
 	}
 
 	return nil

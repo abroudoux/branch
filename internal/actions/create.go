@@ -11,10 +11,16 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 )
 
-func createNewBranch(repo git.Repository, branch branches.BranchWithSymbol, head branches.Branch) error {
+func createNewBranch(repo git.Repository, branch branches.BranchWithSymbol, branches []branches.BranchWithSymbol, head branches.Branch) error {
 	newBranchName, err := forms.AskInput("Enter the name of the new branch: ")
 	if err != nil {
 		return err
+	}
+
+	if isBranchNameAlreadyUsed(newBranchName, branches) {
+		warnMsg := fmt.Sprintf("%s is already used, please choose another name.", ui.RenderElementSelected(newBranchName))
+		logs.WarnMsg(warnMsg)
+		createNewBranch(repo, branch, branches, head)
 	}
 
 	if !branch.IsHead {
@@ -47,4 +53,14 @@ func createNewBranch(repo git.Repository, branch branches.BranchWithSymbol, head
 	}
 
 	return nil
+}
+
+func isBranchNameAlreadyUsed(newBranchName string, branches []branches.BranchWithSymbol) bool {
+	for _, branch := range branches {
+		if branch.Name == newBranchName {
+			return true
+		}
+	}
+
+	return false
 }
