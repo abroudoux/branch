@@ -12,9 +12,7 @@ func DoBranchAction(repo git.Repository, branchSelected branches.BranchDetails, 
 		logs.Info("Exiting..")
 		return nil
 	case BranchActionDelete:
-		// TODO
-		return nil
-		// return delete(repo, branch)
+		return delete(repo, branchSelected)
 	case BranchActionMerge:
 		return nil
 	case BranchActionNewBranch:
