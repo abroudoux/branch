@@ -14,11 +14,9 @@ func DoBranchAction(repo git.Repository, branchSelected branches.BranchDetails, 
 	case BranchActionDelete:
 		return delete(repo, branchSelected)
 	case BranchActionMerge:
-		return nil
+		return merge(repo, branchSelected)
 	case BranchActionNewBranch:
 		return createNewBranch(repo, branchSelected, allBranches, head)
-	case BranchActionRename:
-		return rename(repo, branchSelected, head)
 	case BranchActionCheckout:
 		return checkout(repo, branchSelected.Branch.Name().String(), head)
 	case BranchActionCopyName:

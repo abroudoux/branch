@@ -19,6 +19,6 @@ func copyBranchName(branch branches.BranchDetails) error {
 		return err
 	}
 
-	logs.Info(fmt.Sprintf("Branch name '%s' copy to the clipboard.", ui.RenderElementSelected(branch.Name)))
+	logs.Info(fmt.Sprintf("Branch name %s copy to the clipboard.", ui.RenderElementSelected(branch.Name)))
 	return nil
 }

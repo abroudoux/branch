@@ -24,6 +24,7 @@ func (menu branchChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
+			menu.branchSelected = BranchDetails{}
 			return menu, tea.Quit
 		case "down":
 			menu.cursor++

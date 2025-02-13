@@ -9,7 +9,6 @@ const (
 	BranchActionDelete
 	BranchActionMerge
 	BranchActionNewBranch
-	BranchActionRename
 	BranchActionCheckout
 	BranchActionCopyName
 )

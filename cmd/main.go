@@ -32,10 +32,10 @@ func main() {
 	branchSelected, err := br.SelectBranch(branchesWithDetails)
 	if err != nil {
 		logs.Error("Error: ", err)
-		panic(err)
+		os.Exit(1)
 	}
 
-	if branchSelected.Branch.Name() == "" {
+	if branchSelected.Name == "" {
 		logs.Info("Program exited...")
 		os.Exit(0)
 	}

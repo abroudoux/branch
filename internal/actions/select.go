@@ -14,7 +14,6 @@ func (a BranchAction) String() string {
 		"Delete",
 		"Merge",
 		"New Branch",
-		"Rename",
 		"Checkout",
 		"Copy Name",
 	}[a]
@@ -26,7 +25,6 @@ func getAllBranchActions() []BranchAction {
 		BranchActionDelete,
 		BranchActionMerge,
 		BranchActionNewBranch,
-		BranchActionRename,
 		BranchActionCheckout,
 		BranchActionCopyName,
 	}
