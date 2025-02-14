@@ -3,28 +3,15 @@ package actions
 import (
 	"github.com/abroudoux/branch/internal/branches"
 	"github.com/abroudoux/branch/internal/git"
+	"github.com/abroudoux/branch/internal/logs"
 )
 
-func merge(repo git.Repository, branch branches.BranchDetails) error {
-	// if branch.Head {
-	// 	// TODO
-	// 	logs.WarnMsg("Cannot merge the current branch into itself. Please select a different target branch.")
-	// 	return nil
-	// }
+func merge(_ git.Repository, branch branches.BranchDetails) error {
+	if branch.Head {
+		logs.WarnMsg("Cannot merge the current branch into itself. Please select a different target branch.")
+		return nil
+	}
 
-	// branchRef, err := repo.Reference(branch.Branch.Name(), true)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// options := git.MergeOptions{}
-	// err = repo.Merge(*branchRef, options)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// msgMergeSuccess := fmt.Sprintf("Branch %s merged.", ui.RenderElementSelected(branch.Name))
-	// logs.Info(msgMergeSuccess)
-
+	logs.WarnMsg("Not implemented yet")
 	return nil
 }
