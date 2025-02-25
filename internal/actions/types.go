@@ -19,5 +19,3 @@ type branchActionChoice struct {
 	actionSelected BranchAction
 	branchSelected branches.BranchDetails
 }
-
-type mergeOptions = &git.MergeOptions

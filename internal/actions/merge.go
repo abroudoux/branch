@@ -5,10 +5,10 @@ import (
 
 	"github.com/abroudoux/branch/internal/branches"
 	"github.com/abroudoux/branch/internal/forms"
+	"github.com/abroudoux/branch/internal/git"
 	"github.com/abroudoux/branch/internal/logs"
 	"github.com/abroudoux/branch/internal/ui"
 	"github.com/charmbracelet/log"
-	"github.com/go-git/go-git/v5"
 )
 
 func merge(repo git.Repository, branch branches.BranchDetails) error {
