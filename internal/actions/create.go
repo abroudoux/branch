@@ -18,7 +18,6 @@ func createNewBranch(repo git.Repository, branch branches.BranchDetails, branche
 	}
 
 	for {
-
 		newBranchName, err := forms.AskInput("Enter the name of the new branch: ")
 		if err != nil {
 			return fmt.Errorf("failed to get input: %w", err)
@@ -50,7 +49,6 @@ func createNewBranch(repo git.Repository, branch branches.BranchDetails, branche
 			if err != nil {
 				return fmt.Errorf("failed to checkout new branch: %w", err)
 			}
-			logs.Info(fmt.Sprintf("Switched to new branch %s", ui.RenderElementSelected(newBranchName)))
 		}
 
 		return nil
