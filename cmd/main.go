@@ -8,6 +8,7 @@ import (
 	"github.com/abroudoux/branch/internal/git"
 	"github.com/abroudoux/branch/internal/logs"
 	"github.com/abroudoux/branch/internal/utils"
+	"github.com/charmbracelet/log"
 )
 
 func main() {
@@ -29,7 +30,8 @@ func main() {
 
 	repo, err := git.GetRepositoryCurrentDir()
 	if err != nil {
-		utils.PrintErrorExitProgram(err)
+		log.Warn("You are not in a git repository.")
+		os.Exit(0)
 	}
 
 	branches, err := br.GetBranches(repo)
