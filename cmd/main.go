@@ -6,7 +6,6 @@ import (
 	"github.com/abroudoux/branch/internal/actions"
 	br "github.com/abroudoux/branch/internal/branches"
 	"github.com/abroudoux/branch/internal/git"
-	"github.com/abroudoux/branch/internal/logs"
 	"github.com/abroudoux/branch/internal/utils"
 	"github.com/charmbracelet/log"
 )
@@ -17,20 +16,20 @@ func main() {
 
 		switch option {
 		case "--help", "-h", "help":
-			utils.HelpManual()
+			utils.Help()
 		case "--version", "-v", "version":
 			utils.Version()
 		default:
-			logs.WarnMsg("Unknown option.")
-			utils.HelpManual()
+			log.Warn("Unknown option.")
+			utils.Help()
 		}
 
 		os.Exit(0)
 	}
 
-	repo, err := git.GetRepositoryCurrentDir()
+	repo, err := git.GetRepository(".")
 	if err != nil {
-		log.Warn("You are not in a git repository.")
+		log.Warn("You're not in a git repository.")
 		os.Exit(0)
 	}
 
@@ -51,7 +50,7 @@ func main() {
 	}
 
 	if branchSelected.Name == "" {
-		logs.Info("Program exited...")
+		log.Info("Program exited..")
 		os.Exit(0)
 	}
 

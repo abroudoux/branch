@@ -13,7 +13,7 @@ func Version() {
 	fmt.Printf("Latest version: %s\n", getLatestVersion())
 }
 
-func HelpManual() {
+func Help() {
 	commands := []string{
 		"branch",
 		"branch [--help, -h]",
@@ -23,7 +23,7 @@ func HelpManual() {
 		"Show this help message",
 	}
 
-	fmt.Println("Usage: branch [options]")
+	fmt.Println("\nUsage: branch [options]")
 	for i, cmd := range commands {
 		fmt.Printf("  %-20s %s\n", cmd, descriptions[i])
 	}
