@@ -1,7 +1,7 @@
 package branches
 
-func GetBranches(repo Repository) ([]Branch, error) {
-	branchIter, err := repo.Branches()
+func GetBranches(repository Repository) ([]Branch, error) {
+	branchIter, err := repository.Branches()
 	if err != nil {
 		return nil, err
 	}
