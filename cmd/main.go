@@ -5,27 +5,14 @@ import (
 
 	"github.com/abroudoux/branch/internal/actions"
 	br "github.com/abroudoux/branch/internal/branches"
+	"github.com/abroudoux/branch/internal/flags"
 	"github.com/abroudoux/branch/internal/git"
 	"github.com/abroudoux/branch/internal/utils"
 	"github.com/charmbracelet/log"
 )
 
 func main() {
-	if len(os.Args) > 1 {
-		option := os.Args[1]
-
-		switch option {
-		case "--help", "-h", "help":
-			utils.Help()
-		case "--version", "-v", "version":
-			utils.Version()
-		default:
-			log.Warn("Unknown option.")
-			utils.Help()
-		}
-
-		os.Exit(0)
-	}
+	flags.HandleFlags()
 
 	repo, err := git.GetRepository(".")
 	if err != nil {
