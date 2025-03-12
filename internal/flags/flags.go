@@ -32,6 +32,7 @@ func getLatestVersion() string {
 func printLastVersion() {
 	printAscii()
 	fmt.Printf("Latest version: %s\n", getLatestVersion())
+	return
 }
 
 func printHelpManual() {
@@ -48,9 +49,11 @@ func printHelpManual() {
 	for i, cmd := range commands {
 		fmt.Printf("  %-20s %s\n", cmd, descriptions[i])
 	}
+	return
 }
 
 func printAscii() {
 	ascii, _ := os.ReadFile("./ressources/ascii.txt")
 	fmt.Println(string(ascii))
+	return
 }
