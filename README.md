@@ -8,10 +8,7 @@
 
 ```bash
 brew tap abroudoux/tap
-```
-
-```bash
-brew install abroudoux/tap/branch
+brew install branch
 ```
 
 ### Manual
