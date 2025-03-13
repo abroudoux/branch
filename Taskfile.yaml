@@ -15,5 +15,5 @@ tasks:
   rel:
     desc: Push a new release
     cmds:
-      - git tag v{{ .VERSION }}
-      - git push origin v{{ .VERSION }}
+      - git tag v{{ .CLI_ARGS }}
+      - git push origin v{{ .CLI_ARGS }}
