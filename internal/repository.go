@@ -58,7 +58,7 @@ func (repository *Repository) SelectBranch() (Branch, error) {
 	return branchSelected, nil
 }
 
-func (repository *Repository) DoBranchAction(branchSelected Branch, action branchAction) error {
+func (repository *Repository) DoAction(branchSelected Branch, action branchAction) error {
 	switch action {
 	case BranchActionExit:
 		log.Info("Exiting..")
@@ -71,6 +71,8 @@ func (repository *Repository) DoBranchAction(branchSelected Branch, action branc
 		return repository.createNewBranch(branchSelected)
 	case BranchActionCheckout:
 		return repository.checkout(branchSelected)
+	case BranchActionPull:
+		return repository.pull(branchSelected)
 	case BranchActionCopyName:
 		return copyBranchName(branchSelected)
 	}
@@ -210,7 +212,7 @@ func (repository *Repository) checkout(branch Branch) error {
 
 	worktree, err := repository.Worktree()
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to get worktree: %w", err)
 	}
 
 	options := &git.CheckoutOptions{
@@ -218,7 +220,7 @@ func (repository *Repository) checkout(branch Branch) error {
 	}
 	err = worktree.Checkout(options)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to checkout branch: %w", err)
 	}
 
 	msg := fmt.Sprintf("Successfully checked out branch %s.", renderElSelected(branch.Name().Short()))
@@ -226,14 +228,41 @@ func (repository *Repository) checkout(branch Branch) error {
 	return nil
 }
 
+func (repository *Repository) pull(branch Branch) error {
+	if !repository.isHead(branch) {
+		log.Warn("You need to pull from the head, move on it first.")
+		return nil
+	}
+
+	w, err := repository.Worktree()
+	if err != nil {
+		return fmt.Errorf("failed to get worktree: %w", err)
+	}
+
+	err = w.Pull(&git.PullOptions{
+		RemoteName: "origin",
+		Progress:   nil,
+	})
+	if err == git.NoErrAlreadyUpToDate {
+		log.Info("Branch is already up to date")
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("failed to pull from origin: %w", err)
+	}
+
+	log.Info(fmt.Sprintf("Successfully pulled latest changes for branch %s", renderElSelected(branch.Name().Short())))
+	return nil
+}
+
 func copyBranchName(branch Branch) error {
 	if clipboard.Unsupported {
-		return fmt.Errorf("Clipboard not supported on this plateform.")
+		return fmt.Errorf("clipboard not supported on this plateform.")
 	}
 
 	err := clipboard.WriteAll(branch.Name().Short())
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to copy branch name: %w", err)
 	}
 
 	log.Info(fmt.Sprintf("Branch name %s copied to clipboard.", renderElSelected(branch.Name().Short())))

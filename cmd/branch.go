@@ -33,7 +33,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = repository.DoBranchAction(branchSelected, action)
+	err = repository.DoAction(branchSelected, action)
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)

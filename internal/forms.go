@@ -77,24 +77,39 @@ func (menu branchChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return menu, nil
 }
 
+func (menu branchChoice) branchIsHead(branch Branch) bool {
+	return branch.Name() == menu.head.Name()
+}
+
+func (menu *branchChoice) orderBranchesOrder() {
+	firstPart := []Branch{}
+	secondPart := []Branch{}
+
+	for _, branch := range menu.branches {
+		if branch.Name() == menu.head.Name() {
+			secondPart = append(secondPart, branch)
+		} else {
+			firstPart = append(firstPart, branch)
+		}
+	}
+
+	menu.branches = append(firstPart, secondPart...)
+}
+
 func (menu branchChoice) View() string {
 	s := "\033[H\033[2J\n"
 	s += "Choose a branch:\n\n"
 
-	// First render all non-head branches
-	for i, branch := range menu.branches {
-		if branch.Name() != menu.head.Name() {
-			cursor := renderCursor(menu.cursor == i)
-			branchName := "  " + branch.Name().Short()
-			s += fmt.Sprintf("%s %s\n", cursor, renderCurrentLine(branchName, menu.cursor == i))
-		}
-	}
+	menu.orderBranchesOrder()
 
-	// Then render the head branch last
 	for i, branch := range menu.branches {
-		if branch.Name() == menu.head.Name() {
-			cursor := renderCursor(menu.cursor == i)
+		cursor := renderCursor(menu.cursor == i)
+
+		if menu.branchIsHead(branch) {
 			branchName := "* " + branch.Name().Short()
+			s += fmt.Sprintf("%s %s\n", cursor, renderCurrentLine(branchName, menu.cursor == i))
+		} else {
+			branchName := "  " + branch.Name().Short()
 			s += fmt.Sprintf("%s %s\n", cursor, renderCurrentLine(branchName, menu.cursor == i))
 		}
 	}
@@ -110,6 +125,7 @@ const (
 	BranchActionMerge
 	BranchActionNewBranch
 	BranchActionCheckout
+	BranchActionPull
 	BranchActionCopyName
 )
 
@@ -120,6 +136,7 @@ func (a branchAction) String() string {
 		"Merge",
 		"New Branch",
 		"Checkout",
+		"Pull",
 		"Copy Name",
 	}[a]
 }
@@ -131,6 +148,7 @@ func getAllBranchActions() []branchAction {
 		BranchActionMerge,
 		BranchActionNewBranch,
 		BranchActionCheckout,
+		BranchActionPull,
 		BranchActionCopyName,
 	}
 }
