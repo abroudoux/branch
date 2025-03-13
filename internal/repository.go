@@ -115,10 +115,14 @@ func (repository *Repository) merge(branch Branch) error {
 	if err != nil {
 		return err
 	}
-
 	if !confirmMerge {
 		log.Info("Merge cancelled.")
 		return nil
+	}
+
+	_, err = repository.Worktree()
+	if err != nil {
+		return err
 	}
 
 	log.Warn("Not implemented yet..")
@@ -126,12 +130,11 @@ func (repository *Repository) merge(branch Branch) error {
 }
 
 func (repository *Repository) isHead(branch Branch) bool {
-	head, err := repository.Head()
-	if err != nil {
-		return false
+	if head, err := repository.Head(); err == nil {
+		return head.Name() == branch.Name()
 	}
 
-	return head.Name() == branch.Name()
+	return false
 }
 
 func (repository *Repository) createNewBranch(branch Branch) error {
@@ -143,7 +146,7 @@ func (repository *Repository) createNewBranch(branch Branch) error {
 	for {
 		newBranchName, err := readInput("Enter the name of the new branch: ")
 		if err != nil {
-			return fmt.Errorf("failed to get input: %w", err)
+			return fmt.Errorf("failed to read input: %w", err)
 		}
 
 		if repository.isBranchNameAlreadyUsed(newBranchName) {
