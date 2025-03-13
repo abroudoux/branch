@@ -122,11 +122,6 @@ func (repository *Repository) merge(branch Branch) error {
 		return nil
 	}
 
-	_, err = repository.Worktree()
-	if err != nil {
-		return err
-	}
-
 	log.Warn("Not implemented yet..")
 	return nil
 }
