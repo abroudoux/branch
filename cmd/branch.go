@@ -18,7 +18,8 @@ func main() {
 
 	branchSelected, err := repository.SelectBranch()
 	if err != nil {
-		internal.PrintErrorExitProgram(err)
+		log.Error(err)
+		os.Exit(1)
 	}
 
 	if branchSelected == nil {
@@ -28,11 +29,13 @@ func main() {
 
 	action, err := internal.SelectAction(branchSelected)
 	if err != nil {
-		internal.PrintErrorExitProgram(err)
+		log.Error(err)
+		os.Exit(1)
 	}
 
 	err = repository.DoBranchAction(branchSelected, action)
 	if err != nil {
-		internal.PrintErrorExitProgram(err)
+		log.Error(err)
+		os.Exit(1)
 	}
 }
