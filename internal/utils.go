@@ -22,10 +22,6 @@ func copyBranchName(branch Branch) error {
 	return nil
 }
 
-func cleanView() {
-	fmt.Print("\033[H\033[2J")
-}
-
 func PrintErrorExitProgram(err error) {
 	log.Error("Error: ", err)
 	os.Exit(1)

@@ -139,8 +139,6 @@ func (repository *Repository) createNewBranch(branch Branch) error {
 		return nil
 	}
 
-	cleanView()
-
 	for {
 		newBranchName, err := readInput("Enter the name of the new branch: ")
 		if err != nil {
