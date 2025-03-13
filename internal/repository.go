@@ -83,7 +83,9 @@ func (repository *Repository) delete(branch Branch) error {
 		return nil
 	}
 
-	msgConfirmation := fmt.Sprintf("Are you sure you want to delete %s?", renderElSelected(branch.Name().Short()))
+	cleanView()
+
+	msgConfirmation := fmt.Sprintf("Are you sure you want to delete %s ?", renderElSelected(branch.Name().Short()))
 	confirmBranchDeletion, err := getConfirmation(msgConfirmation)
 	if err != nil {
 		return err
@@ -94,7 +96,7 @@ func (repository *Repository) delete(branch Branch) error {
 		return nil
 	}
 
-	refName := plumbing.ReferenceName(branch.Name().Short())
+	refName := plumbing.ReferenceName(branch.Name())
 	err = repository.Storer.RemoveReference(refName)
 	if err != nil {
 		return err
