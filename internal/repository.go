@@ -3,6 +3,7 @@ package internal
 import (
 	"fmt"
 
+	"github.com/atotto/clipboard"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/log"
 	"github.com/go-git/go-git/v5"
@@ -219,5 +220,19 @@ func (repository *Repository) checkout(branch Branch) error {
 
 	msg := fmt.Sprintf("Successfully checked out branch %s.", renderElSelected(branch.Name().Short()))
 	log.Info(msg)
+	return nil
+}
+
+func copyBranchName(branch Branch) error {
+	if clipboard.Unsupported {
+		return fmt.Errorf("Clipboard not supported on this plateform.")
+	}
+
+	err := clipboard.WriteAll(branch.Name().Short())
+	if err != nil {
+		return err
+	}
+
+	log.Info(fmt.Sprintf("Branch name %s copied to clipboard.", renderElSelected(branch.Name().Short())))
 	return nil
 }
