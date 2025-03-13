@@ -83,8 +83,6 @@ func (repository *Repository) delete(branch Branch) error {
 		return nil
 	}
 
-	cleanView()
-
 	msgConfirmation := fmt.Sprintf("Are you sure you want to delete %s ?", renderElSelected(branch.Name().Short()))
 	confirmBranchDeletion, err := getConfirmation(msgConfirmation)
 	if err != nil {
