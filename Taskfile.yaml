@@ -2,12 +2,18 @@ version: "3"
 
 tasks:
   build:
-    desc: Build the app
+    desc: Build the binary
     cmds:
-      - go build -o bin/branch cmd/main.go
+      - go build -o bin/branch cmd/branch.go
 
   run:
-    desc: Run the app
+    desc: Run the program
     cmds:
       - task build
       - ./bin/branch {{ .CLI_ARGS }}
+
+  rel:
+    desc: Push a new release
+    cmds:
+      - git tag v{{ .VERSION }}
+      - git push origin v{{ .VERSION }}
