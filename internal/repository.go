@@ -110,7 +110,7 @@ func (repository *Repository) merge(branch Branch) error {
 		return nil
 	}
 
-	confirmMerge, err := getConfirmation(fmt.Sprintf("Are you sure you want to merge %s?", renderElSelected(branch.Name().Short())))
+	confirmMerge, err := getConfirmation(fmt.Sprintf("Are you sure you want to merge %s ?", renderElSelected(branch.Name().Short())))
 	if err != nil {
 		return err
 	}
