@@ -81,14 +81,20 @@ func (menu branchChoice) View() string {
 	s := "\033[H\033[2J\n"
 	s += "Choose a branch:\n\n"
 
+	// First render all non-head branches
 	for i, branch := range menu.branches {
-		cursor := renderCursor(menu.cursor == i)
-
-		if branch.Name() == menu.head.Name() {
-			branchName := "* " + branch.Name().Short()
-			s += fmt.Sprintf("%s %s\n", cursor, renderCurrentLine(branchName, menu.cursor == i))
-		} else {
+		if branch.Name() != menu.head.Name() {
+			cursor := renderCursor(menu.cursor == i)
 			branchName := "  " + branch.Name().Short()
+			s += fmt.Sprintf("%s %s\n", cursor, renderCurrentLine(branchName, menu.cursor == i))
+		}
+	}
+
+	// Then render the head branch last
+	for i, branch := range menu.branches {
+		if branch.Name() == menu.head.Name() {
+			cursor := renderCursor(menu.cursor == i)
+			branchName := "* " + branch.Name().Short()
 			s += fmt.Sprintf("%s %s\n", cursor, renderCurrentLine(branchName, menu.cursor == i))
 		}
 	}
