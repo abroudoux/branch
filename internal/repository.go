@@ -60,9 +60,6 @@ func (repository *Repository) SelectBranch() (Branch, error) {
 
 func (repository *Repository) DoAction(branchSelected Branch, action branchAction) error {
 	switch action {
-	case BranchActionExit:
-		log.Info("Exiting..")
-		return nil
 	case BranchActionDelete:
 		return repository.delete(branchSelected)
 	case BranchActionMerge:
@@ -75,9 +72,10 @@ func (repository *Repository) DoAction(branchSelected Branch, action branchActio
 		return repository.pull(branchSelected)
 	case BranchActionCopyName:
 		return copyBranchName(branchSelected)
+	default:
+		log.Info("Exiting..")
+		return nil
 	}
-
-	return nil
 }
 
 func (repository *Repository) delete(branch Branch) error {
