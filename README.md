@@ -2,7 +2,7 @@
 
 🌿 Enhance Git Branch Management
 
-`branch` allows you to manage your Git branches with various and commons actions. Once you're running `branch`, you can manage your branches with basics options, like `Copy the name`, `Checkout`, `Delete`, `Create a new branch from` or `Merge`.
+`branch` allows you to manage your Git branches with various and commons actions.
 
 ## 🚀 Installation
 
