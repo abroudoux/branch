@@ -26,7 +26,7 @@ func HandleFlags() {
 }
 
 func getLatestVersion() string {
-	return "v0.2.2"
+	return "v0.2.3"
 }
 
 func printLastVersion() {

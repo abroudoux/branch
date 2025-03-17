@@ -81,26 +81,9 @@ func (menu branchChoice) branchIsHead(branch Branch) bool {
 	return branch.Name() == menu.head.Name()
 }
 
-func (menu *branchChoice) orderBranchesOrder() {
-	firstPart := []Branch{}
-	secondPart := []Branch{}
-
-	for _, branch := range menu.branches {
-		if branch.Name() == menu.head.Name() {
-			secondPart = append(secondPart, branch)
-		} else {
-			firstPart = append(firstPart, branch)
-		}
-	}
-
-	menu.branches = append(firstPart, secondPart...)
-}
-
 func (menu branchChoice) View() string {
 	s := "\033[H\033[2J\n"
 	s += "Choose a branch:\n\n"
-
-	menu.orderBranchesOrder()
 
 	for i, branch := range menu.branches {
 		cursor := renderCursor(menu.cursor == i)
