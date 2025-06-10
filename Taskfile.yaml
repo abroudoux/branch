@@ -6,10 +6,10 @@ tasks:
     cmds:
       - go build -o bin/branch cmd/branch.go
 
-  run:
-    desc: Run the program
+  dev:
+    desc: Run the program in development mode
+    deps: [build]
     cmds:
-      - task build
       - ./bin/branch {{ .CLI_ARGS }}
 
   rel:

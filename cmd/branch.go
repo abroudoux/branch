@@ -3,14 +3,14 @@ package main
 import (
 	"os"
 
-	"github.com/abroudoux/branch/internal"
+	. "github.com/abroudoux/branch/internal"
 	"github.com/charmbracelet/log"
 )
 
 func main() {
-	internal.HandleFlags()
+	HandleFlags()
 
-	repository, err := internal.GetRepository(".")
+	repository, err := GetRepository(".")
 	if err != nil {
 		log.Warn("You're not in a git repository.")
 		os.Exit(0)
@@ -27,7 +27,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	action, err := internal.SelectAction(branchSelected)
+	action, err := SelectAction(branchSelected)
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)
